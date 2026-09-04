@@ -19,6 +19,7 @@ __version__ = "3.0.0"
 """
 import argparse
 import io
+import os
 import sys
 import urllib.request
 from collections import Counter
