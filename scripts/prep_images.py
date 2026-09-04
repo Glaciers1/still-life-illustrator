@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-__version__ = "2.1.0"
+__version__ = "3.0.0"
 """静物插画一键后处理：下载 URL / 读取本地图 -> 等比校正到目标像素 -> 输出检查摘要。
 
 把原来"curl 下载 + PIL 缩放 + inspect_image"三步合并为一条命令。

@@ -1,6 +1,6 @@
 # Brief JSON 规范（唯一规划格式 · brief@1.1）
 
-> 这是"先规划、后渲染"的**唯一中间格式**。创意统一由本体技能自起草（`source:"self"`，external 扩展模式已随 v2.1.0 移除），产出符合本规范的 brief，再经 `scripts/validate_brief.py` 校验通过、`scripts/build_from_brief.py` 拼装成最终生图提示词。
+> 这是"先规划、后渲染"的**唯一中间格式**。无论创意来自外部 DeepSeek（`source:"external"`）还是本体技能自起草（`source:"self"`），都必须产出同一份符合本规范的 brief，再经 `scripts/validate_brief.py` 校验通过、`scripts/build_from_brief.py` 拼装成最终生图提示词。
 > **分工铁律**：brief 只承载"可变创意"（选物/数量/状态/视角构图/文字/画面段 pv_en）；媒介笔触、PALETTE、HERO、CLUSTER、EDGE、TEXT-BLANK、NO_TEXT 等"不变技术段"由本地 build 脚本统一补，**brief 里禁止写这些**（防止提示词变长、风格被带偏）。
 
 ## 1. 完整字段
@@ -57,7 +57,7 @@
 | 字段 | 约束 |
 |---|---|
 | `schema` | 固定 `brief@1.1`（旧会话缺省视为 1.0，仍可跑但会提示升级） |
-| `source` | 固定 `self`（external 模式已随 v2.1.0 移除） |
+| `source` | `external` / `self` 二选一，必填 |
 | `id` | 非空字符串，用作输出文件前缀 |
 | `season` / `style` / `lang` / `ratio` | style∈{S1,S2,S3}；lang∈{zh,en}；ratio 形如 `3:4`/`4:5`/`1:1` |
 | `ref_style` | **可选**字符串，无参考图时省略或空串；有参考图时填 `inspect_image.py --prompt-inject` 输出的英文风格片段；build_from_brief.py 拼装时自动注入到 PALETTE 段之后，不影响其他模块 |

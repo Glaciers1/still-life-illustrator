@@ -365,7 +365,7 @@ class TestCLI:
         assert hasattr(cp, "__version__")
         assert isinstance(cp.__version__, str)
         # v2.0 版本号
-        assert cp.__version__.startswith("2.")
+        assert cp.__version__.startswith("3.")
 
     def test_main_callable(self):
         assert callable(cp.main)

@@ -1,0 +1,253 @@
+{
+  "version": "1.0",
+  "title": "静物插画生成面板",
+  "description": "选择选项后生成标准指令，一键复制给AI执行",
+  "groups": [
+    {
+      "name": "基础设置",
+      "fields": [
+        {
+          "key": "mode",
+          "label": "生成模式",
+          "type": "select",
+          "default": "self-A",
+          "options": [
+            {"value": "self-A", "label": "self-A（推荐：骨架+LLM补创意）"},
+            {"value": "self-B", "label": "self-B（AI直接起草brief）"},
+            {"value": "external", "label": "external（DeepSeek创意+本地渲染）"}
+          ]
+        },
+        {
+          "key": "batch_size",
+          "label": "批量规模",
+          "type": "select",
+          "default": "10",
+          "options": [
+            {"value": "2", "label": "2张（测试）"},
+            {"value": "5", "label": "5张（小批量）"},
+            {"value": "10", "label": "10张（默认）"},
+            {"value": "15", "label": "15张（中批量）"},
+            {"value": "20", "label": "20张（大批量）"},
+            {"value": "30", "label": "30张（超大批量）"}
+          ]
+        },
+        {
+          "key": "ratio",
+          "label": "图片比例",
+          "type": "select",
+          "default": "3:4",
+          "options": [
+            {"value": "3:4", "label": "3:4 竖屏（推荐）"},
+            {"value": "4:5", "label": "4:5 竖屏"},
+            {"value": "1:1", "label": "1:1 方形"},
+            {"value": "4:3", "label": "4:3 横屏"},
+            {"value": "16:9", "label": "16:9 宽屏"}
+          ]
+        },
+        {
+          "key": "lang",
+          "label": "文字语言",
+          "type": "select",
+          "default": "en",
+          "options": [
+            {"value": "en", "label": "英文（默认）"},
+            {"value": "zh", "label": "中文"}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "风格与题材",
+      "fields": [
+        {
+          "key": "style",
+          "label": "画风",
+          "type": "select",
+          "default": "auto",
+          "options": [
+            {"value": "auto", "label": "auto 批次均衡（默认）"},
+            {"value": "S1", "label": "S1 水彩蜡笔手绘"},
+            {"value": "S2", "label": "S2 叙事静物编排"},
+            {"value": "S3", "label": "S3 色粉油画棒颗粒"}
+          ]
+        },
+        {
+          "key": "season",
+          "label": "季节",
+          "type": "select",
+          "default": "auto",
+          "options": [
+            {"value": "auto", "label": "auto 批次均衡（默认）"},
+            {"value": "春", "label": "春"},
+            {"value": "夏", "label": "夏"},
+            {"value": "秋", "label": "秋"},
+            {"value": "冬", "label": "冬"},
+            {"value": "全年", "label": "全年·常备（器物·甜点·花卉·食材）"}
+          ]
+        },
+        {
+          "key": "cast_size",
+          "label": "元素丰富度（cast_size）",
+          "type": "select",
+          "default": "auto",
+          "options": [
+            {"value": "auto", "label": "auto 按概率抽样（默认，不固定）"},
+            {"value": "1", "label": "Solo 单一主体"},
+            {"value": "2", "label": "Duo 主体+1配角"},
+            {"value": "3", "label": "Standard 主体+2配角"},
+            {"value": "4", "label": "Abundant 主体+3配角"},
+            {"value": "5", "label": "Bountiful 主体+4配角"},
+            {"value": "6", "label": "Lush 主体+5配角"},
+            {"value": "large", "label": "偏大（4-6为主，画面丰富）"}
+          ]
+        },
+        {
+          "key": "subjects",
+          "label": "指定主体（可选，逗号分隔）",
+          "type": "text",
+          "default": "",
+          "placeholder": "留空=自动从旬物索引随机选择，如：草莓,三文鱼,巴斯克蛋糕"
+        }
+      ]
+    },
+    {
+      "name": "文字与排版",
+      "fields": [
+        {
+          "key": "title_style",
+          "label": "标题排法",
+          "type": "select",
+          "default": "auto",
+          "options": [
+            {"value": "auto", "label": "auto 批次随机（默认）"},
+            {"value": "normal", "label": "normal 正常横排"},
+            {"value": "italic", "label": "italic 斜体"},
+            {"value": "wave", "label": "wave 波浪排列"},
+            {"value": "arch", "label": "arch 拱形排列"},
+            {"value": "scatter", "label": "scatter 散点排列"}
+          ]
+        },
+        {
+          "key": "title_width",
+          "label": "主标题字块占比",
+          "type": "range",
+          "default": "0.30",
+          "min": "0.20",
+          "max": "0.60",
+          "step": "0.05"
+        },
+        {
+          "key": "container",
+          "label": "容器承载",
+          "type": "select",
+          "default": "auto",
+          "options": [
+            {"value": "auto", "label": "auto 随机选择（默认）"},
+            {"value": "ceramic", "label": "陶瓷（白瓷盘/粗陶碟/青瓷碗）"},
+            {"value": "wood", "label": "木质（砧板/托盘/木碗）"},
+            {"value": "bamboo", "label": "竹藤（编篮/笸箩/竹席）"},
+            {"value": "metal", "label": "金属（不锈钢盘/铜盘）"},
+            {"value": "glass", "label": "玻璃（碗/杯/盘）"},
+            {"value": "stone", "label": "石材（大理石板/石板）"},
+            {"value": "fabric", "label": "织物（亚麻/粗麻/丝绸）"}
+          ]
+        },
+        {
+          "key": "state_overlay",
+          "label": "状态叠加",
+          "type": "select",
+          "default": "auto",
+          "options": [
+            {"value": "auto", "label": "auto 随机选用（默认，按cuttable_states）"},
+            {"value": "whole", "label": "仅完整状态"},
+            {"value": "sliced", "label": "完整+切片"},
+            {"value": "halved", "label": "完整+剖半"},
+            {"value": "cubed", "label": "完整+切大块"},
+            {"value": "diced", "label": "完整+切小丁"},
+            {"value": "julienned", "label": "完整+切条切丝"},
+            {"value": "peeled", "label": "完整+剥皮"},
+            {"value": "shelled", "label": "完整+剥壳"}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "后处理与性能",
+      "fields": [
+        {
+          "key": "color_palette",
+          "label": "色块后处理",
+          "type": "select",
+          "default": "off",
+          "options": [
+            {"value": "off", "label": "关闭（默认）"},
+            {"value": "on", "label": "开启（条形色带，动态提取主色）"}
+          ]
+        },
+        {
+          "key": "reference_images",
+          "label": "参考图",
+          "type": "select",
+          "default": "none",
+          "options": [
+            {"value": "none", "label": "无参考图（默认）"},
+            {"value": "single", "label": "有参考图（单张风格提取）"},
+            {"value": "multi", "label": "有多张参考图（批量风格汇总）"}
+          ]
+        },
+        {
+          "key": "performance",
+          "label": "性能模式",
+          "type": "select",
+          "default": "formal",
+          "options": [
+            {"value": "formal", "label": "正式模式 5.0 Pro（默认，高质量）"},
+            {"value": "quick", "label": "快速草稿 4.5（低质量，试构图用）"}
+          ]
+        },
+        {
+          "key": "silent",
+          "label": "静默模式",
+          "type": "select",
+          "default": "on",
+          "options": [
+            {"value": "on", "label": "开启（不显示中间过程，仅报错时显示）"},
+            {"value": "off", "label": "关闭（显示完整过程）"}
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "快速草稿",
+      "description": "5张，4.5快速档，试构图用",
+      "values": {"mode": "self-A", "batch_size": "5", "ratio": "3:4", "lang": "en", "style": "auto", "season": "auto", "cast_size": "auto", "title_style": "auto", "container": "auto", "state_overlay": "auto", "color_palette": "off", "reference_images": "none", "performance": "quick", "silent": "on", "title_width": "0.30", "subjects": ""}
+    },
+    {
+      "name": "批量正式",
+      "description": "10张，5.0 Pro，标准出图",
+      "values": {"mode": "self-A", "batch_size": "10", "ratio": "3:4", "lang": "en", "style": "auto", "season": "auto", "cast_size": "auto", "title_style": "auto", "container": "auto", "state_overlay": "auto", "color_palette": "off", "reference_images": "none", "performance": "formal", "silent": "on", "title_width": "0.30", "subjects": ""}
+    },
+    {
+      "name": "丰盛批量",
+      "description": "15张，cast_size偏大，画面丰富",
+      "values": {"mode": "self-A", "batch_size": "15", "ratio": "3:4", "lang": "en", "style": "auto", "season": "auto", "cast_size": "large", "title_style": "auto", "container": "auto", "state_overlay": "auto", "color_palette": "off", "reference_images": "none", "performance": "formal", "silent": "on", "title_width": "0.30", "subjects": ""}
+    },
+    {
+      "name": "参考图风格",
+      "description": "单张，有参考图，风格迁移",
+      "values": {"mode": "self-A", "batch_size": "2", "ratio": "3:4", "lang": "en", "style": "auto", "season": "auto", "cast_size": "auto", "title_style": "auto", "container": "auto", "state_overlay": "auto", "color_palette": "off", "reference_images": "single", "performance": "formal", "silent": "on", "title_width": "0.30", "subjects": ""}
+    },
+    {
+      "name": "外部创意",
+      "description": "external模式，DeepSeek创意+本地渲染",
+      "values": {"mode": "external", "batch_size": "10", "ratio": "3:4", "lang": "en", "style": "auto", "season": "auto", "cast_size": "auto", "title_style": "auto", "container": "auto", "state_overlay": "auto", "color_palette": "off", "reference_images": "none", "performance": "formal", "silent": "on", "title_width": "0.30", "subjects": ""}
+    },
+    {
+      "name": "色块成品",
+      "description": "5张，色块后处理，色带成品",
+      "values": {"mode": "self-A", "batch_size": "5", "ratio": "3:4", "lang": "en", "style": "auto", "season": "auto", "cast_size": "auto", "title_style": "normal", "container": "auto", "state_overlay": "auto", "color_palette": "on", "reference_images": "none", "performance": "formal", "silent": "on", "title_width": "0.30", "subjects": ""}
+    }
+  ]
+}

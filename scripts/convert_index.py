@@ -7,7 +7,7 @@ convert_index.py —— 旬物索引 MD → JSON 数据库转换工具。
 包含每个条目的 name/category/season/固有色/质感/结构/成熟/搭配等字段。
 
 MD 保留为人类可读 SSOT（单一事实来源），JSON 由 MD 自动生成，供脚本快速查询。
-self_skeleton.py 优先 json.load() 读取 JSON，不存在时回退 MD。
+self_skeleton.py 和 director_dom.py 优先 json.load() 读取 JSON，不存在时回退 MD。
 
 用法:
   python convert_index.py
@@ -26,7 +26,7 @@ SKILL_ROOT = os.path.normpath(os.path.join(HERE, ".."))
 DEFAULT_MD = os.path.join(SKILL_ROOT, "references", "seasonal-produce-index.md")
 DEFAULT_JSON = os.path.join(SKILL_ROOT, "references", "seasonal_produce_index.json")
 
-# 类别关键词映射（与 self_skeleton.py 保持一致）
+# 类别关键词映射（与 director_dom.py 保持一致）
 _COMMON_FRUITS = {
     "草莓", "番茄", "苹果", "梨", "桃", "葡萄", "西瓜", "芒果", "菠萝", "香蕉",
     "橙子", "柠檬", "柚子", "橘子", "柿子", "石榴", "无花果", "猕猴桃", "樱桃",

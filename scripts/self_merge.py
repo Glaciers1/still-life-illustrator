@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-__version__ = "2.1.0"
+__version__ = "3.0.0"
 """
 self_merge.py —— 把 LLM 补的创意字段合并回 self_skeleton.py 生成的骨架。
 
@@ -83,7 +83,7 @@ def merge_one(skeleton, creative):
         if len(lines) >= 2:
             b["text"]["poem"] = lines[:2]
 
-    # 拉丁学名：无学名（空）则清空，build 跳过 latin 行；有值则必须为大写学名
+    # 拉丁学名（有值转大写，TBD 保留，空值清空以支持"无学名跳过 latin 行"）
     latin = creative.get("latin", "").strip()
     if latin:
         b["text"]["latin"] = latin.upper() if latin.upper() != "TBD" else "TBD"

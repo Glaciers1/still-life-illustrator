@@ -23,7 +23,7 @@
 1. **用户点名从其点名**："就画一颗""极简"→Solo/Duo；"丰盛一点""多些食材""一桌子"→Abundant/Bountiful。
 2. **无点名按概率抽样**（避免总落 Standard）：Solo 12% / Duo 18% / Standard 28% / Abundant 22% / Bountiful 12% / Lush 8%。
 3. **题材/季节可作合理偏离**（不是硬性）：早春、新芽、侘寂、单品广告偏 Solo/Duo；秋收、丰宴、菌菇/根茎大上市偏 Abundant/Bountiful/Lush。
-4. **反重复**：连续两批不用同一档位；批量生成时回看最近 N 批（N≈8）的 `cast_size / hero / style / 视角 / 配色`，命中高度重叠就换档或换主体（批量历史去重见 `director-workflow.md §6.3`）。
+4. **反重复**：连续两批不用同一档位；批量生成时回看最近 N 批（N≈8）的 `cast_size / hero / style / 视角 / 配色`，命中高度重叠就换档或换主体（协同模式的历史去重见 `director-workflow.md §7.3`）。
 
 ## 3. 主体确定性（任何档位都不破）
 

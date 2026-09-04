@@ -1,0 +1,2420 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark" data-season="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>静物工坊 — Still Life Atelier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@200;300;400;500;600&family=JetBrains+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;500;600&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ===== Design Tokens — Editorial Fashion ===== */
+:root {
+  --bg: #0A0A0A;
+  --bg-soft: #111111;
+  --bg-card: rgba(245,240,232,0.015);
+  --bg-card-hover: rgba(245,240,232,0.04);
+  --text: #F5F0E8;
+  --text-soft: #B8B0A0;
+  --text-muted: #6E6858;
+  --text-faint: #3D3A32;
+  --border: rgba(245,240,232,0.08);
+  --border-strong: rgba(245,240,232,0.18);
+  --accent: #E8DCC8;
+  --accent-gold: #C9A96E;
+  --accent-line: rgba(201,169,110,0.4);
+  --output-bg: #060606;
+  --output-text: #D4CDBF;
+  --font-display: 'Cormorant Garamond', 'Noto Serif SC', 'Georgia', serif;
+  --font-body: 'Inter', 'Noto Sans SC', 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --season-glow: rgba(201,169,110,0.03);
+}
+[data-theme="light"] {
+  --bg: #F5F0E8;
+  --bg-soft: #EDE7DA;
+  --bg-card: rgba(10,10,10,0.015);
+  --bg-card-hover: rgba(10,10,10,0.04);
+  --text: #1A1814;
+  --text-soft: #5A5548;
+  --text-muted: #8A8578;
+  --text-faint: #C4BEB0;
+  --border: rgba(10,10,10,0.08);
+  --border-strong: rgba(10,10,10,0.18);
+  --accent: #2A2820;
+  --accent-gold: #8B7355;
+  --accent-line: rgba(139,115,85,0.4);
+  --output-bg: #1A1814;
+  --output-text: #D4CDBF;
+  --season-glow: rgba(139,115,85,0.04);
+}
+
+/* ===== Seasonal Background ===== */
+.season-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+  transition: opacity 1.5s var(--ease);
+}
+.season-bg svg {
+  position: absolute;
+  width: 100%; height: 100%;
+}
+.season-element {
+  fill: none;
+  stroke: var(--accent-gold);
+  stroke-width: 0.8;
+  opacity: 0.22;
+  transition: all 1s var(--ease);
+}
+.season-fill {
+  fill: var(--accent-gold);
+  opacity: 0.10;
+}
+body[data-season="spring"] .season-element { stroke: #E8B4B8; }
+body[data-season="spring"] .season-fill { fill: #E8B4B8; }
+body[data-season="summer"] .season-element { stroke: #8BA888; }
+body[data-season="summer"] .season-fill { fill: #8BA888; }
+body[data-season="autumn"] .season-element { stroke: #C9956B; }
+body[data-season="autumn"] .season-fill { fill: #C9956B; }
+body[data-season="winter"] .season-element { stroke: #A8B8C8; }
+body[data-season="winter"] .season-fill { fill: #A8B8C8; }
+
+/* ===== Falling Seasonal Elements ===== */
+.falling-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.falling-item {
+  position: absolute;
+  top: -10%;
+  opacity: 0;
+  animation: fall linear infinite;
+  will-change: transform;
+}
+.falling-item svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+@keyframes fall {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) translateX(var(--drift, 60px)) rotate(var(--rotate, 360deg));
+    opacity: 0;
+  }
+}
+@keyframes sway {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(var(--sway, 30px)); }
+}
+
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  transition: background 0.6s var(--ease), color 0.6s var(--ease);
+  overflow-x: hidden;
+  position: relative;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
+
+/* ===== Subtle Grain Texture ===== */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.5;
+}
+
+/* ===== Top Bar — Editorial ===== */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 24px 48px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(20px);
+}
+.topbar-left { display: flex; align-items: baseline; gap: 20px; }
+.brand {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  line-height: 1;
+}
+.brand em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--text-soft);
+}
+.brand-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--border-strong);
+}
+.brand-sub {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.topbar-right { display: flex; align-items: center; gap: 14px; }
+
+/* ===== Season Indicator ===== */
+.season-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  background: transparent;
+}
+.season-indicator:hover {
+  border-color: var(--accent-gold);
+  background: var(--bg-card-hover);
+}
+.season-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  transition: background 0.5s var(--ease);
+}
+body[data-season="spring"] .season-dot { background: #E8B4B8; }
+body[data-season="summer"] .season-dot { background: #8BA888; }
+body[data-season="autumn"] .season-dot { background: #C9956B; }
+body[data-season="winter"] .season-dot { background: #A8B8C8; }
+.season-label {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ===== Theme Switch — Minimal ===== */
+.theme-switch {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+}
+.theme-btn {
+  padding: 5px 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 9px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  border-radius: 1px;
+}
+.theme-btn:hover { color: var(--text); }
+.theme-btn.active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+/* ===== Language Switch ===== */
+.lang-switch {
+  position: relative;
+}
+.lang-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lang-btn:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+.lang-btn .lang-arrow {
+  font-size: 8px;
+  opacity: 0.6;
+  transition: transform 0.3s var(--ease);
+}
+.lang-switch.open .lang-btn .lang-arrow { transform: rotate(180deg); }
+.lang-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 140px;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 2px;
+  padding: 6px 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.3s var(--ease);
+  z-index: 200;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.lang-switch.open .lang-dropdown {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.lang-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  font-size: 11px;
+  font-family: var(--font-body);
+  color: var(--text-soft);
+}
+.lang-option:hover {
+  background: var(--bg-card-hover);
+  color: var(--text);
+  padding-left: 20px;
+}
+.lang-option.active {
+  color: var(--accent-gold);
+}
+.lang-option .lang-native {
+  font-family: var(--font-display);
+  font-size: 13px;
+}
+.lang-option .lang-check {
+  font-size: 10px;
+  opacity: 0;
+}
+.lang-option.active .lang-check { opacity: 1; }
+
+/* ===== Buttons — Editorial Minimal ===== */
+.btn {
+  position: relative;
+  padding: 9px 20px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 400;
+  font-family: var(--font-body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.4s var(--ease);
+  overflow: hidden;
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: var(--text);
+  transition: left 0.4s var(--ease-out);
+  z-index: -1;
+}
+.btn:hover {
+  color: var(--bg);
+  border-color: var(--text);
+}
+.btn:hover::before { left: 0; }
+.btn.primary {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.btn.primary::before { background: var(--bg); }
+.btn.primary:hover { color: var(--text); }
+.btn.copied {
+  background: var(--accent-gold);
+  color: var(--bg);
+  border-color: var(--accent-gold);
+}
+.btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.btn:disabled:hover { color: var(--text); border-color: var(--border-strong); }
+.btn:disabled:hover::before { left: -100%; }
+
+/* ===== Main Layout — Generous Whitespace ===== */
+.main-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 320px;
+  gap: 0;
+  padding: 0;
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  padding: 40px 32px;
+  min-height: calc(100vh - 78px);
+  min-width: 0;
+}
+.column:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+
+/* ===== Section — Editorial Card ===== */
+.section {
+  margin-bottom: 48px;
+  opacity: 0;
+  transform: translateY(24px);
+  min-width: 0;
+  animation: riseIn 0.8s var(--ease-out) forwards;
+}
+@keyframes riseIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+.section-title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--text-muted);
+  font-size: 16px;
+}
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+}
+
+/* ===== Form — Minimal Editorial ===== */
+.field { margin-bottom: 22px; }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block;
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-family: var(--font-mono);
+}
+.field select {
+  position: relative;
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid var(--border-strong);
+  border-radius: 0;
+  font-size: 16px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  background: var(--bg);
+  color: var(--text);
+  transition: all 0.3s var(--ease);
+  appearance: none;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+.field input[type="text"] {
+  width: 100%;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid var(--border-strong);
+  border-radius: 0;
+  font-size: 14px;
+  font-family: var(--font-body);
+  font-weight: 300;
+  background: var(--bg);
+  color: var(--text);
+  transition: all 0.3s var(--ease);
+  cursor: text;
+  letter-spacing: 0.02em;
+}
+.field select:focus,
+.field input[type="text"]:focus {
+  outline: none;
+  border-bottom-color: var(--text);
+}
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238A8578' stroke-width='1'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+}
+.field select option {
+  background: var(--bg);
+  color: var(--text);
+  padding: 12px 16px;
+  font-size: 15px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* ===== Select Interactive Effects ===== */
+.field select {
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  background-image: linear-gradient(45deg, transparent 50%, var(--accent) 50%),
+                    linear-gradient(135deg, var(--accent) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+.field select:hover {
+  border-color: var(--accent);
+  background-color: rgba(201, 169, 110, 0.06);
+  box-shadow: 0 0 0 1px rgba(201, 169, 110, 0.2), 0 4px 20px rgba(201, 169, 110, 0.08);
+  transform: translateY(-1px);
+}
+.field select:hover::after {
+  opacity: 1;
+}
+.field select:focus {
+  outline: none;
+  border-color: var(--accent);
+  background-color: rgba(201, 169, 110, 0.08);
+  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.15), 0 6px 24px rgba(201, 169, 110, 0.1);
+}
+.field select:active {
+  transform: translateY(0);
+}
+.field select option {
+  background-color: var(--bg);
+  color: var(--text);
+  padding: 10px 14px;
+  transition: all 0.2s ease;
+}
+.field select option:hover {
+  background-color: rgba(201, 169, 110, 0.15);
+  color: var(--accent);
+}
+.field select option:checked {
+  background-color: rgba(201, 169, 110, 0.2);
+  color: var(--accent);
+  font-weight: 500;
+}
+/* Select shimmer line on hover */
+.field select::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  transition: all 0.4s ease;
+  transform: translateX(-50%);
+}
+.field select:hover::before {
+  width: 80%;
+}
+
+.field select option:checked {
+  background: var(--accent-gold);
+  color: var(--bg);
+}
+.range-wrap { display: flex; align-items: center; gap: 14px; }
+.range-wrap input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 1px;
+  background: var(--border-strong);
+  outline: none;
+}
+.range-wrap input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--text);
+  cursor: pointer;
+  transition: transform 0.2s var(--ease);
+}
+.range-wrap input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.4); }
+.range-value {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text);
+  min-width: 32px;
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+/* ===== Presets — Editorial List ===== */
+.preset-list { display: flex; flex-direction: column; }
+.preset-item {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.4s var(--ease);
+  position: relative;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  text-align: left;
+  width: 100%;
+}
+.preset-item:first-child { border-top: 1px solid var(--border); }
+.preset-item::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 0; height: 1px;
+  background: var(--text);
+  transition: width 0.5s var(--ease-out);
+}
+.preset-item:hover { padding-left: 12px; }
+.preset-item:hover::after { width: 100%; }
+.preset-item.active {
+  padding-left: 12px;
+}
+.preset-item.active::after { width: 100%; background: var(--accent-gold); }
+.preset-item .p-name {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 3px;
+  letter-spacing: 0.02em;
+  transition: color 0.3s var(--ease);
+}
+.preset-item.active .p-name { color: var(--accent-gold); font-style: italic; }
+.preset-item .p-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+
+/* ===== Preview — Editorial Frame ===== */
+.preview-frame {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 3/4;
+  max-height: 560px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-frame img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: opacity 0.5s var(--ease);
+}
+.preview-empty {
+  text-align: center;
+  color: var(--text-faint);
+  padding: 40px;
+}
+.preview-empty .pe-icon {
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-style: italic;
+  font-weight: 300;
+  margin-bottom: 16px;
+  color: var(--text-faint);
+  line-height: 1;
+}
+.preview-empty p {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.preview-empty .pe-hint {
+  font-size: 9px;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+.preview-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px; height: 40px;
+  background: rgba(10,10,10,0.5);
+  border: 1px solid rgba(245,240,232,0.2);
+  color: var(--text-soft);
+  font-size: 18px;
+  font-family: var(--font-display);
+  font-weight: 300;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s var(--ease);
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  border-radius: 50%;
+  opacity: 0;
+}
+.preview-frame:hover .preview-nav-btn { opacity: 1; }
+.preview-nav-btn:hover {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+  transform: translateY(-50%) scale(1.1);
+}
+.preview-nav-btn.prev { left: 12px; }
+.preview-nav-btn.next { right: 12px; }
+.preview-toolbar {
+  position: absolute;
+  top: 16px; right: 16px;
+  display: flex;
+  gap: 6px;
+  z-index: 5;
+}
+.pt-btn {
+  width: 34px; height: 34px;
+  background: rgba(10,10,10,0.6);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  color: var(--text-soft);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s var(--ease);
+}
+.pt-btn:hover {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+.preview-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+.preview-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+}
+.preview-thumbs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 4px 2px 8px;
+}
+.preview-thumbs .thumb {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid #C9A96E;
+  background: rgba(245,240,232,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 12px rgba(201,169,110,0.2);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.preview-thumbs .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 目录扫描栏 */
+.dir-scan-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+  background: rgba(245, 240, 232, 0.03);
+}
+.dir-input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  background: rgba(10, 10, 10, 0.6);
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 4px;
+  color: #F5F0E8;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.dir-input:focus {
+  border-color: #C9A96E;
+  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.15);
+}
+.dir-input::placeholder {
+  color: rgba(245, 240, 232, 0.4);
+}
+.dir-scan-btn {
+  padding: 8px 20px;
+  background: transparent;
+  border: 1px solid #C9A96E;
+  border-radius: 4px;
+  color: #C9A96E;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+.dir-scan-btn:hover {
+  background: rgba(201, 169, 110, 0.15);
+  box-shadow: 0 0 12px rgba(201, 169, 110, 0.3);
+}
+.dir-scan-btn:active {
+  transform: scale(0.98);
+}
+.project-btn {
+  background: rgba(201, 169, 110, 0.15);
+  font-weight: 600;
+}
+.project-btn:hover {
+  background: rgba(201, 169, 110, 0.3);
+}
+.auto-refresh-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(245, 240, 232, 0.7);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.auto-refresh-label input[type="checkbox"] {
+  accent-color: #C9A96E;
+  cursor: pointer;
+}
+.img-filter-sel {
+  padding: 7px 8px;
+  background: rgba(10, 10, 10, 0.6);
+  border: 1px solid rgba(201, 169, 110, 0.3);
+  border-radius: 4px;
+  color: #F5F0E8;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.img-filter-sel:hover, .img-filter-sel:focus {
+  border-color: #C9A96E;
+  box-shadow: 0 0 0 2px rgba(201, 169, 110, 0.12);
+}
+.img-filter-sel option { background: #14110d; color: #F5F0E8; }
+.scan-status {
+  color: #C9A96E;
+  font-size: 12px;
+  font-family: 'Cormorant Garamond', serif;
+  margin-left: 12px;
+}
+
+
+/* ===== Fullscreen ===== */
+.fullscreen-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(6,6,6,0.97);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.4s var(--ease);
+}
+.fullscreen-overlay.active { display: flex; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.fullscreen-overlay img {
+  max-width: 88vw;
+  max-height: 85vh;
+  object-fit: contain;
+}
+.fs-close {
+  position: absolute;
+  top: 32px; right: 32px;
+  width: 48px; height: 48px;
+  background: transparent;
+  border: 1px solid rgba(245,240,232,0.2);
+  color: var(--text-soft);
+  font-size: 18px;
+  font-family: var(--font-display);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s var(--ease);
+}
+.fs-close:hover {
+  background: var(--text);
+  color: var(--bg);
+  transform: rotate(90deg);
+}
+.fs-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px; height: 56px;
+  background: transparent;
+  border: 1px solid rgba(245,240,232,0.2);
+  color: var(--text-soft);
+  font-size: 24px;
+  font-family: var(--font-display);
+  font-weight: 300;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s var(--ease);
+}
+.fs-nav:hover {
+  background: var(--text);
+  color: var(--bg);
+}
+.fs-nav.prev { left: 40px; }
+.fs-nav.next { right: 40px; }
+
+/* ===== Output — Terminal Editorial ===== */
+.output-frame {
+  background: var(--output-bg);
+  border: 1px solid var(--border);
+  padding: 28px;
+  position: relative;
+}
+.output-frame::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, var(--accent-gold), transparent);
+}
+.output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.output-label {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.output-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  box-shadow: 0 0 8px rgba(201,169,110,0.5);
+  animation: breathe 3s ease-in-out infinite;
+}
+@keyframes breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.output-char {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+}
+.output-text {
+  color: var(--output-text);
+  font-size: 12px;
+  line-height: 2;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+.output-text::-webkit-scrollbar { width: 3px; }
+.output-text::-webkit-scrollbar-thumb { background: var(--border-strong); }
+.output-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+/* ===== Footer ===== */
+.footer {
+  text-align: center;
+  padding: 32px;
+  font-size: 9px;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  border-top: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+.footer .ok { color: var(--accent-gold); }
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ===== Responsive ===== */
+@media (max-width: 1400px) {
+  .main-layout { grid-template-columns: 240px 1fr 280px; }
+  .column { padding: 32px 24px; }
+}
+@media (max-width: 1100px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .column:not(:last-child) { border-right: none; border-bottom: 1px solid var(--border); }
+  .column { min-height: auto; }
+}
+@media (max-width: 768px) {
+  .topbar { padding: 20px 24px; flex-wrap: wrap; gap: 12px; }
+  .topbar-right { flex-wrap: wrap; gap: 8px; }
+  .brand { font-size: 20px; }
+  .brand-sub { display: none; }
+  .column { padding: 24px 20px; }
+  .preview-frame { max-height: 360px; max-width: 320px; }
+  .preview-thumbs .thumb { width: 44px; height: 44px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Seasonal Background SVG -->
+<div class="season-bg" id="seasonBg">
+  <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+    <!-- Spring: cherry blossom branches -->
+    <g id="bgSpring" style="display:none">
+      <path class="season-element" d="M1600,80 Q1700,200 1650,350 Q1600,450 1700,520" stroke-width="1.2"/>
+      <path class="season-element" d="M1620,120 Q1680,180 1660,260" stroke-width="0.8"/>
+      <circle class="season-fill" cx="1640" cy="100" r="4"/>
+      <circle class="season-fill" cx="1680" cy="160" r="3"/>
+      <circle class="season-fill" cx="1620" cy="220" r="3.5"/>
+      <circle class="season-fill" cx="1700" cy="300" r="2.5"/>
+      <circle class="season-fill" cx="1660" cy="380" r="3"/>
+      <circle class="season-fill" cx="1680" cy="480" r="2"/>
+      <path class="season-element" d="M100,900 Q200,850 280,920 Q350,980 420,940" stroke-width="1"/>
+      <circle class="season-fill" cx="150" cy="880" r="3"/>
+      <circle class="season-fill" cx="250" cy="900" r="2.5"/>
+      <circle class="season-fill" cx="350" cy="960" r="3"/>
+    </g>
+    <!-- Summer: leaves and sunlight -->
+    <g id="bgSummer" style="display:none">
+      <path class="season-element" d="M200,100 Q280,150 260,250 Q240,320 300,380" stroke-width="1.2"/>
+      <ellipse class="season-fill" cx="240" cy="130" rx="12" ry="6" transform="rotate(-30 240 130)"/>
+      <ellipse class="season-fill" cx="290" cy="200" rx="10" ry="5" transform="rotate(20 290 200)"/>
+      <ellipse class="season-fill" cx="250" cy="290" rx="11" ry="5.5" transform="rotate(-15 250 290)"/>
+      <ellipse class="season-fill" cx="290" cy="360" rx="9" ry="4.5" transform="rotate(25 290 360)"/>
+      <path class="season-element" d="M1700,800 Q1750,750 1780,820 Q1810,880 1760,930" stroke-width="1"/>
+      <ellipse class="season-fill" cx="1740" cy="780" rx="10" ry="5" transform="rotate(40 1740 780)"/>
+      <ellipse class="season-fill" cx="1780" cy="850" rx="8" ry="4" transform="rotate(-20 1780 850)"/>
+      <circle class="season-fill" cx="1600" cy="150" r="40" opacity="0.03"/>
+    </g>
+    <!-- Autumn: maple leaves -->
+    <g id="bgAutumn" style="display:none">
+      <path class="season-element" d="M1650,60 Q1720,140 1680,240 Q1640,320 1720,400" stroke-width="1.2"/>
+      <path class="season-fill" d="M1670,90 L1680,75 L1690,90 L1685,105 L1675,105 Z" opacity="0.1"/>
+      <path class="season-fill" d="M1700,170 L1712,155 L1724,170 L1718,188 L1706,188 Z" opacity="0.1"/>
+      <path class="season-fill" d="M1660,260 L1672,245 L1684,260 L1678,278 L1666,278 Z" opacity="0.1"/>
+      <path class="season-fill" d="M1700,350 L1710,338 L1720,350 L1716,365 L1704,365 Z" opacity="0.1"/>
+      <path class="season-element" d="M150,850 Q220,800 200,900 Q180,970 260,1000" stroke-width="1"/>
+      <path class="season-fill" d="M180,870 L190,858 L200,870 L196,885 L184,885 Z" opacity="0.1"/>
+      <path class="season-fill" d="M220,940 L230,928 L240,940 L236,955 L224,955 Z" opacity="0.1"/>
+      <circle class="season-fill" cx="1550" cy="950" r="3" opacity="0.08"/>
+      <circle class="season-fill" cx="1480" cy="880" r="2.5" opacity="0.08"/>
+    </g>
+    <!-- Winter: snowflakes and bare branches -->
+    <g id="bgWinter" style="display:none">
+      <path class="season-element" d="M1700,100 Q1750,200 1720,320 Q1690,400 1760,480" stroke-width="1"/>
+      <path class="season-element" d="M1720,180 L1760,160 M1710,260 L1670,240 M1730,360 L1770,340" stroke-width="0.6"/>
+      <g class="season-element" stroke-width="0.8">
+        <line x1="300" y1="200" x2="300" y2="220"/>
+        <line x1="290" y1="210" x2="310" y2="210"/>
+        <line x1="293" y1="203" x2="307" y2="217"/>
+        <line x1="307" y1="203" x2="293" y2="217"/>
+      </g>
+      <g class="season-element" stroke-width="0.6">
+        <line x1="1500" y1="700" x2="1500" y2="716"/>
+        <line x1="1492" y1="708" x2="1508" y2="708"/>
+        <line x1="1494" y1="702" x2="1506" y2="714"/>
+        <line x1="1506" y1="702" x2="1494" y2="714"/>
+      </g>
+      <g class="season-element" stroke-width="0.5">
+        <line x1="500" y1="850" x2="500" y2="862"/>
+        <line x1="494" y1="856" x2="506" y2="856"/>
+      </g>
+      <circle class="season-fill" cx="350" cy="400" r="2" opacity="0.15"/>
+      <circle class="season-fill" cx="1400" cy="300" r="1.5" opacity="0.15"/>
+      <circle class="season-fill" cx="800" cy="150" r="2" opacity="0.12"/>
+      <circle class="season-fill" cx="1100" cy="900" r="1.5" opacity="0.12"/>
+    </g>
+  </svg>
+</div>
+<div class="falling-container" id="fallingContainer"></div>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="brand" data-i18n="brand">静物 <em>—</em> 工坊</div>
+    <div class="brand-divider"></div>
+    <div class="brand-sub" data-i18n="brandSub">编辑级生成面板</div>
+  </div>
+  <div class="topbar-right">
+    <!-- Season Indicator -->
+    <button class="season-indicator" id="seasonBtn" title="切换季节背景">
+      <span class="season-dot"></span>
+      <span class="season-label" id="seasonLabel" data-i18n="seasonAuto">随季</span>
+    </button>
+    <!-- Theme Switch -->
+    <div class="theme-switch">
+      <button class="theme-btn" data-theme-value="dark" data-i18n="dark">深色</button>
+      <button class="theme-btn" data-theme-value="light" data-i18n="light">浅色</button>
+      <button class="theme-btn" data-theme-value="auto" data-i18n="auto">自动</button>
+    </div>
+    <!-- Language Switch -->
+    <div class="lang-switch" id="langSwitch">
+      <button class="lang-btn" id="langBtn">
+        <span id="langCurrent">中文</span>
+        <span class="lang-arrow">▼</span>
+      </button>
+      <div class="lang-dropdown" id="langDropdown">
+        <div class="lang-option active" data-lang="zh">
+          <span class="lang-native">中文</span>
+          <span>ZH</span>
+          <span class="lang-check">✓</span>
+        </div>
+        <div class="lang-option" data-lang="en">
+          <span class="lang-native">English</span>
+          <span>EN</span>
+          <span class="lang-check">✓</span>
+        </div>
+        <div class="lang-option" data-lang="ja">
+          <span class="lang-native">日本語</span>
+          <span>JA</span>
+          <span class="lang-check">✓</span>
+        </div>
+        <div class="lang-option" data-lang="ko">
+          <span class="lang-native">한국어</span>
+          <span>KO</span>
+          <span class="lang-check">✓</span>
+        </div>
+        <div class="lang-option" data-lang="fr">
+          <span class="lang-native">Français</span>
+          <span>FR</span>
+          <span class="lang-check">✓</span>
+        </div>
+        <div class="lang-option" data-lang="de">
+          <span class="lang-native">Deutsch</span>
+          <span>DE</span>
+          <span class="lang-check">✓</span>
+        </div>
+        <div class="lang-option" data-lang="es">
+          <span class="lang-native">Español</span>
+          <span>ES</span>
+          <span class="lang-check">✓</span>
+        </div>
+      </div>
+    </div>
+    <button class="btn" id="importBtn" data-i18n="import">导入</button>
+    <input type="file" id="fileInput" multiple accept="image/*" style="display:none">
+  </div>
+</div>
+
+<!-- Main Layout -->
+<div class="main-layout">
+
+  <!-- Left Column -->
+  <div class="column">
+    <div class="section" style="animation-delay: 0.05s">
+      <div class="section-header">
+        <div class="section-title" data-i18n="presets">预设 <em>—</em></div>
+        <div class="section-num" id="presetCount">06</div>
+      </div>
+      <div class="preset-list" id="presets"></div>
+    </div>
+    <div id="leftFields"></div>
+  </div>
+
+  <!-- Center Column -->
+  <div class="column">
+    <!-- Preview -->
+    <div class="section" style="animation-delay: 0.1s">
+      <div class="section-header">
+        <div class="section-title" data-i18n="gallery">作品展示 <em>—</em></div>
+        <div class="section-num" id="previewNum">—</div>
+      </div>
+      <div class="preview-frame" id="previewFrame">
+        <div class="preview-empty" id="previewEmpty">
+          <div class="pe-icon">◐</div>
+          <p data-i18n="previewEmpty">导入成品图进行预览</p>
+          <p class="pe-hint" data-i18n="previewHint">← → 切换 · ESC 全屏</p>
+        </div>
+        <img id="previewImg" style="display:none" alt="preview">
+        <button class="preview-nav-btn prev" id="prevBtn" style="display:none">‹</button>
+        <button class="preview-nav-btn next" id="nextBtn" style="display:none">›</button>
+        <div class="preview-toolbar" id="previewToolbar" style="display:none">
+          <button class="pt-btn" id="downloadBtn" title="Download">↓</button>
+          <button class="pt-btn" id="saveAsBtn" title="Save As">⤢</button>
+          <button class="pt-btn" id="fullscreenBtn" title="Fullscreen">⛶</button>
+        </div>
+      </div>
+      <div class="dir-scan-bar">
+        <button class="dir-scan-btn project-btn" id="projectScanBtn" onclick="scanProject()">
+          <span data-i18n="scanProject">扫描项目</span>
+        </button>
+        <input type="text" id="dirInput" class="dir-input" placeholder="输入工作区目录路径..." data-i18n-placeholder="dirInputPlaceholder">
+        <button class="dir-scan-btn" id="dirScanBtn" onclick="scanDirectory()">
+          <span data-i18n="scanBtn">扫描</span>
+        </button>
+        <label class="auto-refresh-label">
+          <input type="checkbox" id="recursiveChk" checked>
+          <span data-i18n="recursive">递归</span>
+        </label>
+        <select id="imgFilterSel" class="img-filter-sel" onchange="onFilterChange()" title="Image range">
+          <option value="final" data-i18n="filterFinal">仅成品</option>
+          <option value="all" data-i18n="filterAll">全部图片</option>
+        </select>
+        <label class="auto-refresh-label">
+          <input type="checkbox" id="autoRefreshChk" onchange="toggleAutoRefresh()">
+          <span data-i18n="autoRefresh">自动刷新</span>
+        </label>
+      </div>
+      <div class="preview-meta">
+        <span class="preview-count" id="previewCount" data-i18n="noImage">无图片</span>
+        <span id="scanStatus" class="scan-status"></span>
+      </div>
+      <div class="preview-thumbs" id="previewThumbs"></div>
+    </div>
+
+    <!-- Output -->
+    <div class="section" style="animation-delay: 0.15s">
+      <div class="section-header">
+        <div class="section-title" data-i18n="command">生成指令 <em>—</em></div>
+        <div class="section-num">OUT</div>
+      </div>
+      <div class="output-frame">
+        <div class="output-header">
+          <div class="output-label"><span class="output-dot"></span><span data-i18n="generatedInstruction">已生成指令</span></div>
+          <div class="output-char" id="charCount">0 chars</div>
+        </div>
+        <div class="output-text" id="output">Loading...</div>
+        <div class="output-actions">
+          <button class="btn primary" id="copyBtn" data-i18n="copy">复制</button>
+          <button class="btn" id="resetBtn" data-i18n="reset">重置</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column -->
+  <div class="column" id="rightFields"></div>
+
+</div>
+
+<!-- Fullscreen -->
+<div class="fullscreen-overlay" id="fullscreenOverlay">
+  <button class="fs-close" id="closeFullscreen">✕</button>
+  <button class="fs-nav prev" id="fsPrev">‹</button>
+  <img id="fsImg" alt="fullscreen">
+  <button class="fs-nav next" id="fsNext">›</button>
+</div>
+
+<div class="footer" id="footer" data-i18n="footer">静物工坊 · 编辑级面板 v2.0</div>
+
+<script>
+// ===== i18n Dictionary =====
+const i18n = {
+  zh: {
+    brand: '静物 <em>—</em> 工坊',
+    brandSub: '编辑级生成面板',
+    import: '导入',
+    dark: '深色', light: '浅色', auto: '自动',
+    seasonAuto: '随季', seasonSpring: '春', seasonSummer: '夏', seasonAutumn: '秋', seasonWinter: '冬',
+    presets: '预设 <em>—</em>',
+    gallery: '作品展示 <em>—</em>',
+    command: '生成指令 <em>—</em>',
+    generatedInstruction: '已生成指令',
+    copy: '复制', copied: '已复制', reset: '重置',
+    previewEmpty: '导入成品图进行预览',
+    previewHint: '← → 切换 · ESC 全屏',
+    dirInputPlaceholder: '输入任意文件夹路径（不限于工作区），如 C:\\Users\\...',
+    scanBtn: '扫描',
+    autoRefresh: '自动刷新',
+    scanFound: '该目录扫描到 {n} 张图片',
+    scanEmpty: '未找到图片（仅成品模式匹配 *_final.png，可切「全部图片」）',
+    scanError: '扫描失败：请检查目录路径',
+    scanProject: '扫描项目',
+    recursive: '递归',
+    scanProjectFound: '项目目录扫描到 {n} 张成品图',
+    filterFinal: '仅成品',
+    filterAll: '全部图片',
+    noImage: '无图片',
+    footer: '静物工坊 · 编辑级面板 v2.0',
+    ready: '工坊就绪 · 配置已加载',
+    postProcessing: '后处理与性能 <em>—</em>',
+    basicSettings: '基础设置 <em>—</em>',
+    styleSubject: '风格与题材 <em>—</em>',
+    typography: '文字排版 <em>—</em>',
+  },
+  en: {
+    brand: 'Still Life <em>—</em> Atelier',
+    brandSub: 'Editorial Generation Panel',
+    import: 'Import',
+    dark: 'Dark', light: 'Light', auto: 'Auto',
+    seasonAuto: 'Auto', seasonSpring: 'Spring', seasonSummer: 'Summer', seasonAutumn: 'Autumn', seasonWinter: 'Winter',
+    presets: 'Presets <em>—</em>',
+    gallery: 'Gallery <em>—</em>',
+    command: 'Command <em>—</em>',
+    generatedInstruction: 'Generated Instruction',
+    copy: 'Copy', copied: 'Copied', reset: 'Reset',
+    previewEmpty: 'Import final artwork to preview',
+    previewHint: '← → navigate · ESC fullscreen',
+    dirInputPlaceholder: 'Enter any folder path (outside workspace OK), e.g. C:\\Users\\...',
+    scanBtn: 'Scan',
+    autoRefresh: 'Auto Refresh',
+    scanFound: '{n} images found in this folder',
+    scanEmpty: 'No images (final-only matches *_final.png; try All Images)',
+    scanError: 'Scan failed: please check directory path',
+    scanProject: 'Scan Project',
+    recursive: 'Recursive',
+    scanProjectFound: 'Found {n} final images in project directory',
+    filterFinal: 'Final only',
+    filterAll: 'All images',
+    noImage: 'No image',
+    footer: 'Still Life Atelier · Editorial Panel v2.0',
+    ready: 'Atelier Ready · Configuration Loaded',
+    postProcessing: 'Post-processing <em>—</em>',
+    basicSettings: 'Basic Settings <em>—</em>',
+    styleSubject: 'Style & Subject <em>—</em>',
+    typography: 'Typography <em>—</em>',
+  },
+  ja: {
+    brand: '静物 <em>—</em> アトリエ',
+    brandSub: 'エディトリアル生成パネル',
+    import: 'インポート',
+    dark: 'ダーク', light: 'ライト', auto: '自動',
+    seasonAuto: '自動', seasonSpring: '春', seasonSummer: '夏', seasonAutumn: '秋', seasonWinter: '冬',
+    presets: 'プリセット <em>—</em>',
+    gallery: 'ギャラリー <em>—</em>',
+    command: 'コマンド <em>—</em>',
+    generatedInstruction: '生成済み指令',
+    copy: 'コピー', copied: 'コピー済', reset: 'リセット',
+    previewEmpty: '完成作品をインポートしてプレビュー',
+    previewHint: '← → 切替 · ESC 全画面',
+    noImage: '画像なし',
+    footer: '静物アトリエ · エディトリアルパネル v2.0',
+    ready: 'アトリエ準備完了 · 設定読込済',
+    postProcessing: '後処理と性能 <em>—</em>',
+    basicSettings: '基本設定 <em>—</em>',
+    styleSubject: 'スタイルと題材 <em>—</em>',
+    typography: 'タイポグラフィ <em>—</em>',
+    dirInputPlaceholder: '任意のフォルダパス（ワークスペース外も可）',
+    scanBtn: 'スキャン', autoRefresh: '自動更新', scanFound: 'このフォルダで {n} 枚検出',
+    scanEmpty: '画像なし（成品のみは *_final.png、「全画像」へ切替）', scanError: 'スキャン失敗：パス確認',
+    scanProject: 'プロジェクト', recursive: '再帰', scanProjectFound: 'プロジェクトで {n} 枚検出',
+    filterFinal: '成品のみ', filterAll: '全画像',
+  },
+  ko: {
+    brand: '정물 <em>—</em> 아틀리에',
+    brandSub: '에디토리얼 생성 패널',
+    import: '가져오기',
+    dark: '다크', light: '라이트', auto: '자동',
+    seasonAuto: '자동', seasonSpring: '봄', seasonSummer: '여름', seasonAutumn: '가을', seasonWinter: '겨울',
+    presets: '프리셋 <em>—</em>',
+    gallery: '갤러리 <em>—</em>',
+    command: '명령 <em>—</em>',
+    generatedInstruction: '생성된 명령',
+    copy: '복사', copied: '복사됨', reset: '재설정',
+    previewEmpty: '완성 작품 가져오기',
+    previewHint: '← → 전환 · ESC 전체화면',
+    noImage: '이미지 없음',
+    footer: '정물 아틀리에 · 에디토리얼 패널 v2.0',
+    ready: '아틀리에 준비 완료 · 설정 로드됨',
+    postProcessing: '후처리 및 성능 <em>—</em>',
+    basicSettings: '기본 설정 <em>—</em>',
+    styleSubject: '스타일 및 소재 <em>—</em>',
+    typography: '타이포그래피 <em>—</em>',
+    dirInputPlaceholder: '임의 폴더 경로 (워크스페이스 외부 가능)',
+    scanBtn: '스캔', autoRefresh: '자동 새로고침', scanFound: '이 폴더에서 {n}장 발견',
+    scanEmpty: '이미지 없음 (최종본만 *_final.png, 전체 이미지로 전환)', scanError: '스캔 실패: 경로 확인',
+    scanProject: '프로젝트', recursive: '재귀', scanProjectFound: '프로젝트에서 {n}장 발견',
+    filterFinal: '최종본만', filterAll: '전체 이미지',
+  },
+  fr: {
+    brand: 'Nature Morte <em>—</em> Atelier',
+    brandSub: 'Panneau de Génération Éditorial',
+    import: 'Importer',
+    dark: 'Sombre', light: 'Clair', auto: 'Auto',
+    seasonAuto: 'Auto', seasonSpring: 'Printemps', seasonSummer: 'Été', seasonAutumn: 'Automne', seasonWinter: 'Hiver',
+    presets: 'Préréglages <em>—</em>',
+    gallery: 'Galerie <em>—</em>',
+    command: 'Commande <em>—</em>',
+    generatedInstruction: 'Instruction Générée',
+    copy: 'Copier', copied: 'Copié', reset: 'Réinitialiser',
+    previewEmpty: 'Importer l\'œuvre finale pour prévisualiser',
+    previewHint: '← → naviguer · ESC plein écran',
+    noImage: 'Pas d\'image',
+    footer: 'Atelier Nature Morte · Panneau Éditorial v2.0',
+    ready: 'Atelier Prêt · Configuration Chargée',
+    postProcessing: 'Post-traitement & Performance <em>—</em>',
+    basicSettings: 'Paramètres de Base <em>—</em>',
+    styleSubject: 'Style & Sujet <em>—</em>',
+    typography: 'Typographie <em>—</em>',
+    dirInputPlaceholder: "Chemin de n'importe quel dossier (hors espace possible)",
+    scanBtn: 'Scanner', autoRefresh: 'Actualisation', scanFound: '{n} images dans ce dossier',
+    scanEmpty: 'Aucune image (finale *_final.png ; essayez Toutes images)', scanError: 'Échec : vérifiez le chemin',
+    scanProject: 'Projet', recursive: 'Récursif', scanProjectFound: '{n} finales dans le projet',
+    filterFinal: 'Finales uniquement', filterAll: 'Toutes images',
+  },
+  de: {
+    brand: 'Stillleben <em>—</em> Atelier',
+    brandSub: 'Editoriales Generations-Panel',
+    import: 'Importieren',
+    dark: 'Dunkel', light: 'Hell', auto: 'Auto',
+    seasonAuto: 'Auto', seasonSpring: 'Frühling', seasonSummer: 'Sommer', seasonAutumn: 'Herbst', seasonWinter: 'Winter',
+    presets: 'Voreinstellungen <em>—</em>',
+    gallery: 'Galerie <em>—</em>',
+    command: 'Befehl <em>—</em>',
+    generatedInstruction: 'Generierter Befehl',
+    copy: 'Kopieren', copied: 'Kopiert', reset: 'Zurücksetzen',
+    previewEmpty: 'Finales Werk importieren zur Vorschau',
+    previewHint: '← → navigieren · ESC Vollbild',
+    noImage: 'Kein Bild',
+    footer: 'Stillleben Atelier · Editorial Panel v2.0',
+    ready: 'Atelier Bereit · Konfiguration Geladen',
+    postProcessing: 'Nachbearbeitung & Leistung <em>—</em>',
+    basicSettings: 'Grundeinstellungen <em>—</em>',
+    styleSubject: 'Stil & Motiv <em>—</em>',
+    typography: 'Typografie <em>—</em>',
+    dirInputPlaceholder: 'Beliebiger Ordnerpfad (auch außerhalb)',
+    scanBtn: 'Scannen', autoRefresh: 'Auto-Aktualisieren', scanFound: '{n} Bilder in diesem Ordner',
+    scanEmpty: 'Keine Bilder (nur Finales *_final.png; Alle Bilder versuchen)', scanError: 'Fehler: Pfad prüfen',
+    scanProject: 'Projekt', recursive: 'Rekursiv', scanProjectFound: '{n} Finales im Projekt',
+    filterFinal: 'Nur Finales', filterAll: 'Alle Bilder',
+  },
+  es: {
+    brand: 'Naturaleza Muerta <em>—</em> Taller',
+    brandSub: 'Panel de Generación Editorial',
+    import: 'Importar',
+    dark: 'Oscuro', light: 'Claro', auto: 'Auto',
+    seasonAuto: 'Auto', seasonSpring: 'Primavera', seasonSummer: 'Verano', seasonAutumn: 'Otoño', seasonWinter: 'Invierno',
+    presets: 'Preajustes <em>—</em>',
+    gallery: 'Galería <em>—</em>',
+    command: 'Comando <em>—</em>',
+    generatedInstruction: 'Instrucción Generada',
+    copy: 'Copiar', copied: 'Copiado', reset: 'Restablecer',
+    previewEmpty: 'Importar obra final para previsualizar',
+    previewHint: '← → navegar · ESC pantalla completa',
+    noImage: 'Sin imagen',
+    footer: 'Taller Naturaleza Muerta · Panel Editorial v2.0',
+    ready: 'Taller Listo · Configuración Cargada',
+    postProcessing: 'Posprocesado & Rendimiento <em>—</em>',
+    basicSettings: 'Ajustes Básicos <em>—</em>',
+    styleSubject: 'Estilo & Sujeto <em>—</em>',
+    typography: 'Tipografía <em>—</em>',
+    dirInputPlaceholder: 'Ruta de cualquier carpeta (también fuera del espacio)',
+    scanBtn: 'Escanear', autoRefresh: 'Auto-actualizar', scanFound: '{n} imágenes en esta carpeta',
+    scanEmpty: 'Sin imágenes (solo finales *_final.png; pruebe Todas)', scanError: 'Error: revise la ruta',
+    scanProject: 'Proyecto', recursive: 'Recursivo', scanProjectFound: '{n} finales en el proyecto',
+    filterFinal: 'Solo finales', filterAll: 'Todas las imágenes',
+  },
+};
+
+const langNames = { zh:'中文', en:'English', ja:'日本語', ko:'한국어', fr:'Français', de:'Deutsch', es:'Español' };
+
+let currentLang = localStorage.getItem('atelier-lang') || 'zh';
+let config = null;
+let currentValues = {};
+let previewImages = [];
+let autoRefreshTimer = null;
+let lastScanDir = '';
+
+// 目录扫描：调用 /api/list-images API（任意路径均可；替换当前预览列表，主图与缩略图同步）
+// keepPosition=true 用于自动刷新：尽量停留在当前查看的图片，不跳回第一张
+async function scanDirectory(keepPosition) {
+  const dirInput = document.getElementById('dirInput');
+  const statusEl = document.getElementById('scanStatus');
+  const dir = dirInput.value.trim();
+  if (!dir) {
+    statusEl.textContent = getI18n('scanError') || '请输入目录路径';
+    return;
+  }
+  // 记录当前查看项，供自动刷新时保持位置
+  const prev = previewImages[currentPreviewIndex];
+  const keepKey = keepPosition && prev ? (prev.relpath || prev.name) : null;
+  lastScanDir = dir;
+  statusEl.textContent = '...';
+  try {
+    const encodedDir = encodeURIComponent(dir);
+    const recursive = document.getElementById('recursiveChk') ? document.getElementById('recursiveChk').checked : false;
+    const filterSel = document.getElementById('imgFilterSel');
+    const imgFilter = filterSel ? filterSel.value : 'final';
+    const url = '/api/list-images?dir=' + encodedDir + (recursive ? '&recursive=1' : '') + '&filter=' + imgFilter;
+    const resp = await fetch(url);
+    const data = await resp.json();
+    // 替换模式：扫哪个目录就整体只显示该目录；按完整 url 规范化，避免不同目录同名混淆
+    previewImages = (data.images || []).map(function(img) {
+      return {
+        name: img.name || 'image.png',
+        relpath: img.relpath || img.name || '',
+        url: img.url || ('/api/image?path=' + encodeURIComponent(img.path || '')),
+        size: img.size || 0,
+        mtime: img.mtime || ''
+      };
+    });
+    if (previewImages.length > 0) {
+      currentPreviewIndex = 0;
+      if (keepKey) {
+        const at = previewImages.findIndex(x => (x.relpath || x.name) === keepKey);
+        if (at >= 0) currentPreviewIndex = at;
+      }
+      renderPreview();
+      statusEl.textContent = (getI18n('scanFound') || '该目录扫描到 {n} 张图片').replace('{n}', data.count);
+    } else {
+      currentPreviewIndex = 0;
+      renderPreview();
+      statusEl.textContent = getI18n('scanEmpty') || '未找到图片';
+    }
+  } catch (e) {
+    console.error('Scan error:', e);
+    statusEl.textContent = getI18n('scanError') || '扫描失败';
+  }
+}
+
+// 切换图片范围：若已填目录则立即重新扫描（手动扫描，定位到第一张）
+function onFilterChange() {
+  const dirInput = document.getElementById('dirInput');
+  if (dirInput && dirInput.value.trim()) scanDirectory(false);
+}
+
+// 扫描项目目录（自动递归）
+async function scanProject() {
+  const statusEl = document.getElementById('scanStatus');
+  statusEl.textContent = '扫描项目中...';
+  try {
+    const resp = await fetch('/api/scan-project');
+    const data = await resp.json();
+    if (data.images && data.images.length > 0) {
+      // 清空当前图片列表，用项目扫描结果替换
+      previewImages = data.images.map(function(img) {
+        // 确保每个图片对象有url字段，兼容API返回格式
+        return {
+          name: img.name || 'image.png',
+          url: img.url || ('/api/image?path=' + encodeURIComponent(img.path || '')),
+          size: img.size || 0,
+          mtime: img.mtime || ''
+        };
+      });
+      currentPreviewIndex = 0;
+      renderPreview();
+      statusEl.textContent = (getI18n('scanProjectFound') || '项目目录扫描到 {n} 张成品图').replace('{n}', data.count);
+    } else {
+      statusEl.textContent = getI18n('scanEmpty') || '未找到成品图';
+    }
+  } catch (e) {
+    console.error('Project scan error:', e);
+    statusEl.textContent = getI18n('scanError') || '扫描失败';
+  }
+}
+
+// 自动刷新开关
+function toggleAutoRefresh() {
+  const chk = document.getElementById('autoRefreshChk');
+  if (chk.checked) {
+    if (lastScanDir) {
+      scanDirectory(true);
+    }
+    autoRefreshTimer = setInterval(() => {
+      if (lastScanDir) {
+        scanDirectory(true);
+      }
+    }, 5000);
+  } else {
+    if (autoRefreshTimer) {
+      clearInterval(autoRefreshTimer);
+      autoRefreshTimer = null;
+    }
+  }
+}
+
+// 获取i18n文本（兼容旧版本）
+function getI18n(key) {
+  // 统一复用 i18n 字典（含 7 语言）；当前语言缺失时回退英文，再回退中文，最后 null
+  if (typeof i18n !== 'undefined') {
+    const cur = i18n[currentLang];
+    if (cur && cur[key]) return cur[key];
+    if (i18n.en && i18n.en[key]) return i18n.en[key];
+    if (i18n.zh && i18n.zh[key]) return i18n.zh[key];
+  }
+  return null;
+}
+let currentPreviewIndex = 0;
+let currentSeason = localStorage.getItem('atelier-season') || 'auto';
+
+// ===== Apply Language =====
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('atelier-lang', lang);
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang;
+  const dict = i18n[lang] || i18n.zh;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (dict[key]) el.innerHTML = dict[key];
+  });
+  // 同步 placeholder 文案（data-i18n-placeholder）
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (dict[key]) el.placeholder = dict[key];
+  });
+  document.getElementById('langCurrent').textContent = langNames[lang];
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.classList.toggle('active', opt.dataset.lang === lang);
+  });
+  // Update season label
+  updateSeasonLabel();
+  // Re-render dynamic content if config loaded
+  if (config) {
+    renderFields();
+    renderPresets();
+    updateOutput();
+  }
+}
+
+// ===== Season System =====
+function getSeasonFromMonth() {
+  const m = new Date().getMonth() + 1;
+  if (m >= 3 && m <= 5) return 'spring';
+  if (m >= 6 && m <= 8) return 'summer';
+  if (m >= 9 && m <= 11) return 'autumn';
+  return 'winter';
+}
+
+
+// ===== Seasonal Falling Elements =====
+const fallingSVGs = {
+  spring: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C12 2 8 6 8 10C8 12 9 14 12 14C15 14 16 12 16 10C16 6 12 2 12 2Z"/></svg>',
+  summer: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 8C17 8 12 4 7 7C4 9 3 13 5 16C7 19 11 20 14 18C17 16 18 12 17 8Z"/></svg>',
+  autumn: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14 8L20 8L15 12L17 18L12 14L7 18L9 12L4 8L10 8Z"/></svg>',
+  winter: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>',
+};
+
+const fallingConfig = {
+  spring: { count: 18, minSize: 10, maxSize: 22, minDur: 9, maxDur: 16, color: '#E8B4B8', opacity: 0.25 },
+  summer: { count: 14, minSize: 12, maxSize: 24, minDur: 10, maxDur: 18, color: '#8BA888', opacity: 0.22 },
+  autumn: { count: 16, minSize: 11, maxSize: 23, minDur: 8, maxDur: 15, color: '#C9956B', opacity: 0.28 },
+  winter: { count: 24, minSize: 8, maxSize: 18, minDur: 12, maxDur: 20, color: '#A8B8C8', opacity: 0.3 },
+};
+
+function createFallingElements(season) {
+  const container = document.getElementById('fallingContainer');
+  if (!container) return;
+  container.innerHTML = '';
+  const cfg = fallingConfig[season];
+  if (!cfg) return;
+  for (let i = 0; i < cfg.count; i++) {
+    const item = document.createElement('div');
+    item.className = 'falling-item';
+    const size = cfg.minSize + Math.random() * (cfg.maxSize - cfg.minSize);
+    const dur = cfg.minDur + Math.random() * (cfg.maxDur - cfg.minDur);
+    const delay = Math.random() * dur;
+    const left = Math.random() * 100;
+    const drift = (Math.random() - 0.5) * 120;
+    const rotate = (Math.random() > 0.5 ? 1 : -1) * (180 + Math.random() * 360);
+    const opacity = cfg.opacity * (0.7 + Math.random() * 0.3);
+    item.style.width = size + 'px';
+    item.style.height = size + 'px';
+    item.style.left = left + '%';
+    item.style.color = cfg.color;
+    item.style.opacity = opacity;
+    item.style.setProperty('--drift', drift + 'px');
+    item.style.setProperty('--rotate', rotate + 'deg');
+    item.style.animationDuration = dur + 's';
+    item.style.animationDelay = '-' + delay + 's';
+    item.innerHTML = fallingSVGs[season];
+    container.appendChild(item);
+  }
+}
+
+function clearFallingElements() {
+  const container = document.getElementById('fallingContainer');
+  if (container) container.innerHTML = '';
+}
+
+function applySeason(season) {
+  currentSeason = season;
+  localStorage.setItem('atelier-season', season);
+  const effective = season === 'auto' ? getSeasonFromMonth() : season;
+  document.body.dataset.season = effective;
+  // Show/hide SVG groups
+  ['Spring','Summer','Autumn','Winter'].forEach(s => {
+    const el = document.getElementById('bg' + s);
+    if (el) el.style.display = (s.toLowerCase() === effective) ? 'block' : 'none';
+  });
+  // Create falling elements for the effective season
+  clearFallingElements();
+  createFallingElements(effective);
+  updateSeasonLabel();
+}
+
+function updateSeasonLabel() {
+  const dict = i18n[currentLang] || i18n.zh;
+  const label = document.getElementById('seasonLabel');
+  if (currentSeason === 'auto') {
+    label.textContent = dict.seasonAuto;
+  } else {
+    label.textContent = dict['season' + currentSeason.charAt(0).toUpperCase() + currentSeason.slice(1)];
+  }
+}
+
+// ===== Theme =====
+function initTheme() {
+  const saved = localStorage.getItem('atelier-theme') || 'dark';
+  applyTheme(saved);
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.dataset.themeValue;
+      localStorage.setItem('atelier-theme', val);
+      applyTheme(val);
+    });
+  });
+}
+function applyTheme(val) {
+  let theme = val;
+  if (val === 'auto') {
+    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  document.documentElement.setAttribute('data-theme', theme);
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.themeValue === val);
+  });
+}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  if (localStorage.getItem('atelier-theme') === 'auto') applyTheme('auto');
+});
+
+// ===== Language Dropdown =====
+function initLangSwitch() {
+  const switchEl = document.getElementById('langSwitch');
+  const btn = document.getElementById('langBtn');
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    switchEl.classList.toggle('open');
+  });
+  document.querySelectorAll('.lang-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      applyLang(opt.dataset.lang);
+      switchEl.classList.remove('open');
+    });
+  });
+  document.addEventListener('click', () => switchEl.classList.remove('open'));
+}
+
+// ===== Season Button =====
+function initSeasonBtn() {
+  const btn = document.getElementById('seasonBtn');
+  const seasons = ['auto', 'spring', 'summer', 'autumn', 'winter'];
+  btn.addEventListener('click', () => {
+    const idx = seasons.indexOf(currentSeason);
+    const next = seasons[(idx + 1) % seasons.length];
+    applySeason(next);
+  });
+}
+
+// ===== Load Config =====
+async function loadConfig() {
+  try {
+    const resp = await fetch('panel_config.json', {cache: 'no-cache'});
+    config = await resp.json();
+    renderFields();
+    renderPresets();
+    updateOutput();
+    const dict = i18n[currentLang] || i18n.zh;
+    document.getElementById('footer').innerHTML = '<span class="ok">●</span> ' + dict.ready;
+  } catch (e) {
+    document.getElementById('output').textContent = 'Configuration load failed: ' + e.message;
+  }
+}
+
+// ===== Field label i18n =====
+const fieldLabels = {
+  zh: { mode:'生成模式', performance:'性能模式', reference_images:'参考图', ratio:'图片比例', lang:'语言', batch_size:'批量数量', subjects:'指定主体', cast_size:'组合档位', title_style:'标题排法', title_width:'主标题占比', container:'容器承载', state_overlay:'状态叠加', style:'风格', season:'季节', color_palette:'色块后处理', silent:'静默模式' },
+  en: { mode:'Mode', performance:'Performance', reference_images:'Reference', ratio:'Ratio', lang:'Language', batch_size:'Batch Size', subjects:'Subjects', cast_size:'Cast Size', title_style:'Title Style', title_width:'Title Width', container:'Container', state_overlay:'State Overlay', style:'Style', season:'Season', color_palette:'Color Palette', silent:'Silent Mode' },
+  ja: { mode:'生成モード', performance:'性能モード', reference_images:'参考画像', ratio:'比率', lang:'言語', batch_size:'バッチサイズ', subjects:'指定主体', cast_size:'構成規模', title_style:'タイトルスタイル', title_width:'タイトル幅', container:'コンテナ', state_overlay:'状態重ね', style:'スタイル', season:'季節', color_palette:'カラーパレット', silent:'サイレントモード' },
+  ko: { mode:'생성 모드', performance:'성능 모드', reference_images:'참고 이미지', ratio:'비율', lang:'언어', batch_size:'배치 크기', subjects:'지정 주체', cast_size:'구성 규모', title_style:'제목 스타일', title_width:'제목 너비', container:'컨테이너', state_overlay:'상태 오버레이', style:'스타일', season:'계절', color_palette:'컬러 팔레트', silent:'사일런트 모드' },
+  fr: { mode:'Mode', performance:'Performance', reference_images:'Référence', ratio:'Ratio', lang:'Langue', batch_size:'Taille du Lot', subjects:'Sujets', cast_size:'Taille de Distribution', title_style:'Style de Titre', title_width:'Largeur du Titre', container:'Conteneur', state_overlay:'Superposition', style:'Style', season:'Saison', color_palette:'Palette de Couleurs', silent:'Mode Silencieux' },
+  de: { mode:'Modus', performance:'Leistung', reference_images:'Referenz', ratio:'Verhältnis', lang:'Sprache', batch_size:'Stapelgröße', subjects:'Motiv', cast_size:'Besetzungsgröße', title_style:'Titelstil', title_width:'Titelbreite', container:'Behälter', state_overlay:'Zustandsüberlagerung', style:'Stil', season:'Jahreszeit', color_palette:'Farbpalette', silent:'Stiller Modus' },
+  es: { mode:'Modo', performance:'Rendimiento', reference_images:'Referencia', ratio:'Proporción', lang:'Idioma', batch_size:'Tamaño de Lote', subjects:'Sujetos', cast_size:'Tamaño de Elenco', title_style:'Estilo de Título', title_width:'Ancho de Título', container:'Contenedor', state_overlay:'Superposición de Estado', style:'Estilo', season:'Estación', color_palette:'Paleta de Colores', silent:'Modo Silencioso' },
+};
+
+function getFieldLabel(key) {
+  const dict = fieldLabels[currentLang] || fieldLabels.zh;
+  return dict[key] || key;
+}
+
+// ===== Option label i18n =====
+const optionLabels = {
+  mode: {
+    'self-A': { zh:'自起草A（推荐：骨架+AI补创意）', en:'Self-A (Rec: Skeleton + AI)', ja:'自起草A（推奨：骨格+AI）', ko:'자체작성 A (추천: 스켈레톤 + AI)', fr:'Self-A (Recommandé)', de:'Self-A (Empfohlen)', es:'Self-A (Recomendado)' },
+    'self-B': { zh:'自起草B（AI直接起草brief）', en:'Self-B (AI Direct Draft)', ja:'自起草B（AI直接起草）', ko:'자체작성 B (AI 직접 작성)', fr:'Self-B (Brouillon IA)', de:'Self-B (KI-Entwurf)', es:'Self-B (Borrador IA)' },
+    'external': { zh:'外部协同（DeepSeek创意+本地渲染）', en:'External (DeepSeek + Local)', ja:'外部連携（DeepSeek+ローカル）', ko:'외부협업 (DeepSeek + 로컬)', fr:'Externe (DeepSeek + Local)', de:'Extern (DeepSeek + Lokal)', es:'Externo (DeepSeek + Local)' },
+  },
+  batch_size: {
+    '2': { zh:'2张（测试）', en:'2 (Test)', ja:'2枚（テスト）', ko:'2장 (테스트)', fr:'2 (Test)', de:'2 (Test)', es:'2 (Prueba)' },
+    '5': { zh:'5张（小批量）', en:'5 (Small)', ja:'5枚（小ロット）', ko:'5장 (소량)', fr:'5 (Petit)', de:'5 (Klein)', es:'5 (Pequeño)' },
+    '10': { zh:'10张（默认）', en:'10 (Default)', ja:'10枚（デフォルト）', ko:'10장 (기본)', fr:'10 (Défaut)', de:'10 (Standard)', es:'10 (Predeterminado)' },
+    '15': { zh:'15张（中批量）', en:'15 (Medium)', ja:'15枚（中ロット）', ko:'15장 (중량)', fr:'15 (Moyen)', de:'15 (Mittel)', es:'15 (Medio)' },
+    '20': { zh:'20张（大批量）', en:'20 (Large)', ja:'20枚（大ロット）', ko:'20장 (대량)', fr:'20 (Grand)', de:'20 (Groß)', es:'20 (Grande)' },
+    '30': { zh:'30张（超大批量）', en:'30 (XL)', ja:'30枚（超大ロット）', ko:'30장 (초대량)', fr:'30 (Très grand)', de:'30 (Sehr groß)', es:'30 (Muy grande)' },
+  },
+  ratio: {
+    '3:4': { zh:'3:4 竖屏（推荐）', en:'3:4 Portrait (Rec)', ja:'3:4 縦長（推奨）', ko:'3:4 세로 (추천)', fr:'3:4 Portrait (Recommandé)', de:'3:4 Hochformat (Empfohlen)', es:'3:4 Retrato (Recomendado)' },
+    '4:5': { zh:'4:5 竖屏', en:'4:5 Portrait', ja:'4:5 縦長', ko:'4:5 세로', fr:'4:5 Portrait', de:'4:5 Hochformat', es:'4:5 Retrato' },
+    '1:1': { zh:'1:1 方形', en:'1:1 Square', ja:'1:1 正方形', ko:'1:1 정사각형', fr:'1:1 Carré', de:'1:1 Quadratisch', es:'1:1 Cuadrado' },
+    '4:3': { zh:'4:3 横屏', en:'4:3 Landscape', ja:'4:3 横長', ko:'4:3 가로', fr:'4:3 Paysage', de:'4:3 Querformat', es:'4:3 Apaisado' },
+    '16:9': { zh:'16:9 宽屏', en:'16:9 Widescreen', ja:'16:9 ワイド', ko:'16:9 와이드', fr:'16:9 Large', de:'16:9 Breitbild', es:'16:9 Panorámico' },
+  },
+  lang: {
+    'en': { zh:'英文（默认）', en:'English (Default)', ja:'英語（デフォルト）', ko:'영어 (기본)', fr:'Anglais (Défaut)', de:'Englisch (Standard)', es:'Inglés (Predeterminado)' },
+    'zh': { zh:'中文', en:'Chinese', ja:'中国語', ko:'중국어', fr:'Chinois', de:'Chinesisch', es:'Chino' },
+  },
+  style: {
+    'auto': { zh:'自动 批次均衡（默认）', en:'Auto Balance (Default)', ja:'自動 バッチ均衡（デフォルト）', ko:'자동 균형 (기본)', fr:'Auto Équilibré (Défaut)', de:'Auto Balance (Standard)', es:'Auto Equilibrado (Predeterminado)' },
+    'S1': { zh:'S1 水彩蜡笔手绘', en:'S1 Watercolor Crayon', ja:'S1 水彩クレヨン', ko:'S1 수채 크레용', fr:'S1 Aquarelle Crayon', de:'S1 Aquarell Buntstift', es:'S1 Acuarela Crayón' },
+    'S2': { zh:'S2 叙事静物编排', en:'S2 Narrative Still Life', ja:'S2 物語静物構成', ko:'S2 서사 정물 구성', fr:'S2 Nature Morte Narrative', de:'S2 Narratives Stillleben', es:'S2 Naturaleza Muerta Narrativa' },
+    'S3': { zh:'S3 色粉油画棒颗粒', en:'S3 Pastel Grain', ja:'S3 パステル粒子', ko:'S3 파스텔 그레인', fr:'S3 Pastel Grain', de:'S3 Pastellkorn', es:'S3 Pastel Grano' },
+  },
+  season: {
+    'auto': { zh:'自动 批次均衡（默认）', en:'Auto Balance (Default)', ja:'自動 バッチ均衡（デフォルト）', ko:'자동 균형 (기본)', fr:'Auto Équilibré (Défaut)', de:'Auto Balance (Standard)', es:'Auto Equilibrado (Predeterminado)' },
+    '春': { zh:'春', en:'Spring', ja:'春', ko:'봄', fr:'Printemps', de:'Frühling', es:'Primavera' },
+    '夏': { zh:'夏', en:'Summer', ja:'夏', ko:'여름', fr:'Été', de:'Sommer', es:'Verano' },
+    '秋': { zh:'秋', en:'Autumn', ja:'秋', ko:'가을', fr:'Automne', de:'Herbst', es:'Otoño' },
+    '冬': { zh:'冬', en:'Winter', ja:'冬', ko:'겨울', fr:'Hiver', de:'Winter', es:'Invierno' },
+    '全年': { zh:'全年·常备（器物·甜点·花卉·食材）', en:'Year-round (Utensils·Desserts·Flowers·Pantry)', ja:'通年·常備（器物·菓子·花·常備食材）', ko:'연중·상시 (기물·디저트·꽃·상비식재)', fr:'Toute l’année (Ustensiles·Desserts·Fleurs·Réserve)', de:'Ganzjährig (Geräte·Desserts·Blumen·Vorrat)', es:'Todo el año (Utensilios·Postres·Flores·Despensa)' },
+  },
+  cast_size: {
+    'auto': { zh:'自动 按概率抽样（默认，不固定）', en:'Auto Probability (Default)', ja:'自動 確率サンプリング（デフォルト）', ko:'자동 확률샘플링 (기본)', fr:'Auto Probabilité (Défaut)', de:'Auto Wahrscheinlichkeit (Standard)', es:'Auto Probabilidad (Predeterminado)' },
+    '1': { zh:'Solo 单一主体', en:'Solo (1 Hero)', ja:'Solo 単一主体', ko:'솔로 단일 주체', fr:'Solo (1 Sujet)', de:'Solo (1 Motiv)', es:'Solo (1 Sujeto)' },
+    '2': { zh:'Duo 主体+1配角', en:'Duo (Hero+1)', ja:'Duo 主体+1脇役', ko:'듀오 주체+1보조', fr:'Duo (Sujet+1)', de:'Duo (Motiv+1)', es:'Dúo (Sujeto+1)' },
+    '3': { zh:'Standard 主体+2配角', en:'Standard (Hero+2)', ja:'Standard 主体+2脇役', ko:'스탠다드 주체+2보조', fr:'Standard (Sujet+2)', de:'Standard (Motiv+2)', es:'Estándar (Sujeto+2)' },
+    '4': { zh:'Abundant 主体+3配角', en:'Abundant (Hero+3)', ja:'Abundant 主体+3脇役', ko:'어번던트 주체+3보조', fr:'Abondant (Sujet+3)', de:'Reichhaltig (Motiv+3)', es:'Abundante (Sujeto+3)' },
+    '5': { zh:'Bountiful 主体+4配角', en:'Bountiful (Hero+4)', ja:'Bountiful 主体+4脇役', ko:'바운티풀 주체+4보조', fr:'Généreux (Sujet+4)', de:'Üppig (Motiv+4)', es:'Generoso (Sujeto+4)' },
+    '6': { zh:'Lush 主体+5配角', en:'Lush (Hero+5)', ja:'Lush 主体+5脇役', ko:'러시 주체+5보조', fr:'Luxuriant (Sujet+5)', de:'Üppigst (Motiv+5)', es:'Exuberante (Sujeto+5)' },
+    'large': { zh:'偏大（4-6为主，画面丰富）', en:'Large (4-6, Rich)', ja:'大きめ（4-6中心、豊か）', ko:'큰쪽 (4-6 위주, 풍부)', fr:'Grand (4-6, Riche)', de:'Groß (4-6, Reich)', es:'Grande (4-6, Rico)' },
+  },
+  title_style: {
+    'auto': { zh:'自动 批次随机（默认）', en:'Auto Random (Default)', ja:'自動 ランダム（デフォルト）', ko:'자동 랜덤 (기본)', fr:'Auto Aléatoire (Défaut)', de:'Auto Zufall (Standard)', es:'Auto Aleatorio (Predeterminado)' },
+    'normal': { zh:'正常 横排', en:'Normal Horizontal', ja:'ノーマル 横並び', ko:'노멀 가로정렬', fr:'Normal Horizontal', de:'Normal Horizontal', es:'Normal Horizontal' },
+    'italic': { zh:'斜体', en:'Italic', ja:'イタリック', ko:'이탤릭', fr:'Italique', de:'Kursiv', es:'Cursiva' },
+    'wave': { zh:'波浪 排列', en:'Wave', ja:'ウェーブ 配列', ko:'웨이브 배열', fr:'Vague', de:'Welle', es:'Ola' },
+    'arch': { zh:'拱形 排列', en:'Arch', ja:'アーチ 配列', ko:'아치 배열', fr:'Arche', de:'Bogen', es:'Arco' },
+    'scatter': { zh:'散点 排列', en:'Scatter', ja:'スキャッター 配列', ko:'스캐터 배열', fr:'Éparpillé', de:'Verstreut', es:'Disperso' },
+  },
+  container: {
+    'auto': { zh:'自动 随机选择（默认）', en:'Auto Random (Default)', ja:'自動 ランダム（デフォルト）', ko:'자동 랜덤 (기본)', fr:'Auto Aléatoire (Défaut)', de:'Auto Zufall (Standard)', es:'Auto Aleatorio (Predeterminado)' },
+    'ceramic': { zh:'陶瓷（白瓷盘/粗陶碟/青瓷碗）', en:'Ceramic', ja:'セラミック', ko:'도자기', fr:'Céramique', de:'Keramik', es:'Cerámica' },
+    'wood': { zh:'木质（砧板/托盘/木碗）', en:'Wood', ja:'ウッド', ko:'우드', fr:'Bois', de:'Holz', es:'Madera' },
+    'bamboo': { zh:'竹藤（编篮/笸箩/竹席）', en:'Bamboo', ja:'バンブー', ko:'대나무', fr:'Bambou', de:'Bambus', es:'Bambú' },
+    'metal': { zh:'金属（不锈钢盘/铜盘）', en:'Metal', ja:'メタル', ko:'메탈', fr:'Métal', de:'Metall', es:'Metal' },
+    'glass': { zh:'玻璃（碗/杯/盘）', en:'Glass', ja:'グラス', ko:'글라스', fr:'Verre', de:'Glas', es:'Vidrio' },
+    'stone': { zh:'石材（大理石板/石板）', en:'Stone', ja:'ストーン', ko:'스톤', fr:'Pierre', de:'Stein', es:'Piedra' },
+    'fabric': { zh:'织物（亚麻/粗麻/丝绸）', en:'Fabric', ja:'ファブリック', ko:'패브릭', fr:'Tissu', de:'Stoff', es:'Tela' },
+  },
+  state_overlay: {
+    'auto': { zh:'自动 随机选用（默认）', en:'Auto Random (Default)', ja:'自動 ランダム（デフォルト）', ko:'자동 랜덤 (기본)', fr:'Auto Aléatoire (Défaut)', de:'Auto Zufall (Standard)', es:'Auto Aleatorio (Predeterminado)' },
+    'whole': { zh:'仅完整状态', en:'Whole Only', ja:'完全状態のみ', ko:'완전 상태만', fr:'Entier uniquement', de:'Nur ganz', es:'Solo entero' },
+    'sliced': { zh:'完整+切片', en:'Whole + Sliced', ja:'完全+スライス', ko:'완전+슬라이스', fr:'Entier + Tranché', de:'Ganz + Scheiben', es:'Entero + Rebanado' },
+    'halved': { zh:'完整+剖半', en:'Whole + Halved', ja:'完全+半分', ko:'완전+반갈이', fr:'Entier + Moitié', de:'Ganz + Halbiert', es:'Entero + Partido' },
+    'cubed': { zh:'完整+切大块', en:'Whole + Cubed', ja:'完全+角切り', ko:'완전+큐브', fr:'Entier + Cubes', de:'Ganz + Würfel', es:'Entero + Cubos' },
+    'diced': { zh:'完整+切小丁', en:'Whole + Diced', ja:'完全+みじん切り', ko:'완전+다이스', fr:'Entier + Dés', de:'Ganz + Gewürfelt', es:'Entero + Picado' },
+    'julienned': { zh:'完整+切条切丝', en:'Whole + Julienned', ja:'完全+千切り', ko:'완전+줄리엔', fr:'Entier + Julienne', de:'Ganz + Julienne', es:'Entero + Juliana' },
+    'peeled': { zh:'完整+剥皮', en:'Whole + Peeled', ja:'完全+皮むき', ko:'완전+필', fr:'Entier + Épluché', de:'Ganz + Geschält', es:'Entero + Pelado' },
+    'shelled': { zh:'完整+剥壳', en:'Whole + Shelled', ja:'完全+殻むき', ko:'완전+쉘드', fr:'Entier + Décortiqué', de:'Ganz + Geschält', es:'Entero + Descascarado' },
+  },
+  color_palette: {
+    'off': { zh:'关闭（默认）', en:'Off (Default)', ja:'オフ（デフォルト）', ko:'끄기 (기본)', fr:'Désactivé (Défaut)', de:'Aus (Standard)', es:'Desactivado (Predeterminado)' },
+    'on': { zh:'开启（条形色带，动态提取主色）', en:'On (Color Bars)', ja:'オン（カラーバー）', ko:'켜기 (컬러바)', fr:'Activé (Barres de couleur)', de:'An (Farbteile)', es:'Activado (Barras de color)' },
+  },
+  reference_images: {
+    'none': { zh:'无参考图（默认）', en:'None (Default)', ja:'なし（デフォルト）', ko:'없음 (기본)', fr:'Aucune (Défaut)', de:'Keine (Standard)', es:'Ninguna (Predeterminado)' },
+    'single': { zh:'有参考图（单张风格提取）', en:'Single (Style Extract)', ja:'1枚（スタイル抽出）', ko:'1장 (스타일 추출)', fr:'Une (Extraction style)', de:'Eine (Stilextraktion)', es:'Una (Extraer estilo)' },
+    'multi': { zh:'有多张参考图（批量风格汇总）', en:'Multiple (Batch Summary)', ja:'複数（バッチ集計）', ko:'여러장 (배치 요약)', fr:'Multiples (Résumé lot)', de:'Mehrere (Stapelzusammenfassung)', es:'Múltiples (Resumen lote)' },
+  },
+  performance: {
+    'formal': { zh:'正式模式 5.0 Pro（默认，高质量）', en:'Formal 5.0 Pro (Default)', ja:'フォーマル 5.0 Pro（デフォルト）', ko:'포멀 5.0 Pro (기본)', fr:'Formel 5.0 Pro (Défaut)', de:'Formal 5.0 Pro (Standard)', es:'Formal 5.0 Pro (Predeterminado)' },
+    'quick': { zh:'快速草稿 4.5（低质量，试构图用）', en:'Quick Draft 4.5', ja:'クイック 4.5（下書き）', ko:'퀵 4.5 (초안)', fr:'Rapide 4.5 (Brouillon)', de:'Schnell 4.5 (Entwurf)', es:'Rápido 4.5 (Borrador)' },
+  },
+  silent: {
+    'on': { zh:'开启（不显示中间过程，仅报错时显示）', en:'On (Silent)', ja:'オン（サイレント）', ko:'켜기 (사일런트)', fr:'Activé (Silencieux)', de:'An (Still)', es:'Activado (Silencioso)' },
+    'off': { zh:'关闭（显示完整过程）', en:'Off (Verbose)', ja:'オフ（詳細表示）', ko:'끄기 (상세표시)', fr:'Désactivé (Verbeux)', de:'Aus (Ausführlich)', es:'Desactivado (Verboso)' },
+  },
+};
+
+function getOptionLabel(fieldKey, value) {
+  const field = optionLabels[fieldKey];
+  if (!field || !field[value]) return value;
+  return field[value][currentLang] || field[value].zh || value;
+}
+
+// ===== Preset i18n =====
+const presetLabels = {
+  '快速草稿': { zh:'快速草稿', en:'Quick Draft', ja:'クイック下書き', ko:'퀵 드래프트', fr:'Brouillon Rapide', de:'Schnellentwurf', es:'Borrador Rápido' },
+  '批量正式': { zh:'批量正式', en:'Batch Formal', ja:'バッチフォーマル', ko:'배치 포멀', fr:'Lot Formel', de:'Stapel Formal', es:'Lote Formal' },
+  '丰盛批量': { zh:'丰盛批量', en:'Rich Batch', ja:'豊かバッチ', ko:'풍성 배치', fr:'Lot Riche', de:'Reicher Stapel', es:'Lote Rico' },
+  '参考图风格': { zh:'参考图风格', en:'Reference Style', ja:'参考画像スタイル', ko:'참고이미지 스타일', fr:'Style Référence', de:'Referenzstil', es:'Estilo Referencia' },
+  '外部创意': { zh:'外部创意', en:'External Creative', ja:'外部クリエイティブ', ko:'외부 크리에이티브', fr:'Créatif Externe', de:'Externe Kreativ', es:'Creativo Externo' },
+  '色块成品': { zh:'色块成品', en:'Color Palette', ja:'カラーパレット', ko:'컬러팔레트', fr:'Palette Couleur', de:'Farbpalette', es:'Paleta Color' },
+};
+const presetDescs = {
+  '快速草稿': { zh:'5张，4.5快速档，试构图用', en:'5 imgs, 4.5 quick, for layout test', ja:'5枚、4.5クイック、構成テスト用', ko:'5장, 4.5 퀵, 레이아웃 테스트', fr:'5 imgs, 4.5 rapide, test mise en page', de:'5 Bilder, 4.5 schnell, Layout-Test', es:'5 imgs, 4.5 rápido, prueba diseño' },
+  '批量正式': { zh:'10张，5.0 Pro，标准出图', en:'10 imgs, 5.0 Pro, standard', ja:'10枚、5.0 Pro、標準出力', ko:'10장, 5.0 Pro, 표준', fr:'10 imgs, 5.0 Pro, standard', de:'10 Bilder, 5.0 Pro, Standard', es:'10 imgs, 5.0 Pro, estándar' },
+  '丰盛批量': { zh:'15张，cast_size偏大，画面丰富', en:'15 imgs, large cast, rich scene', ja:'15枚、大きめ構成、豊かな画面', ko:'15장, 큰 구성, 풍부한 화면', fr:'15 imgs, grande distribution, scène riche', de:'15 Bilder, große Besetzung, reiche Szene', es:'15 imgs, gran elenco, escena rica' },
+  '参考图风格': { zh:'单张，有参考图，风格迁移', en:'Single, with reference, style transfer', ja:'1枚、参考画像あり、スタイル転送', ko:'1장, 참고이미지, 스타일 전송', fr:'Une, avec référence, transfert style', de:'Eine, mit Referenz, Stilübertragung', es:'Una, con referencia, transferencia estilo' },
+  '外部创意': { zh:'external模式，DeepSeek创意+本地渲染', en:'External mode, DeepSeek + local render', ja:'外部モード、DeepSeek+ローカルレンダリング', ko:'외부 모드, DeepSeek + 로컬 렌더링', fr:'Mode externe, DeepSeek + rendu local', de:'Externer Modus, DeepSeek + lokales Rendering', es:'Modo externo, DeepSeek + render local' },
+  '色块成品': { zh:'5张，色块后处理，色带成品', en:'5 imgs, color palette post-process', ja:'5枚、カラーパレット後処理', ko:'5장, 컬러팔레트 후처리', fr:'5 imgs, post-traitement palette', de:'5 Bilder, Farbpalette Nachbearbeitung', es:'5 imgs, post-proceso paleta' },
+};
+
+function getPresetLabel(name) {
+  return (presetLabels[name] && presetLabels[name][currentLang]) || name;
+}
+function getPresetDesc(name) {
+  return (presetDescs[name] && presetDescs[name][currentLang]) || name;
+}
+
+// ===== Placeholder i18n =====
+const placeholderLabels = {
+  subjects: {
+    zh: '留空=自动从旬物索引随机选择，如：草莓,三文鱼,巴斯克蛋糕',
+    en: 'Leave empty = auto-select from seasonal index, e.g.: Strawberry,Salmon,Basque Cake',
+    ja: '空欄=旬物索引から自動選択、例：いちご,サーモン,バスクチーズケーキ',
+    ko: '비움=계절지수에서 자동선택, 예: 딸기,연어,바스크치즈케이크',
+    fr: 'Laisser vide = sélection auto depuis index, ex: Fraise,Saumon,Gâteau Basque',
+    de: 'Leer lassen = Auto-Auswahl aus Index, z.B.: Erdbeere,Lachs,Baskischer Kuchen',
+    es: 'Dejar vacío = selección auto desde índice, ej: Fresa,Salmón,Pastel Vasco',
+  },
+};
+function getPlaceholder(fieldKey) {
+  const field = placeholderLabels[fieldKey];
+  if (!field) return '';
+  return field[currentLang] || field.zh || '';
+}
+
+
+
+// ===== Group title i18n =====
+function getGroupTitle(name) {
+  const dict = i18n[currentLang] || i18n.zh;
+  if (name === '后处理与性能') return dict.postProcessing;
+  if (name === '基础设置') return dict.basicSettings;
+  if (name === '风格与题材') return dict.styleSubject;
+  if (name === '文字与排版') return dict.typography;
+  return name;
+}
+
+// ===== Render Fields =====
+function renderFields() {
+  const left = document.getElementById('leftFields');
+  const right = document.getElementById('rightFields');
+  left.innerHTML = '';
+  right.innerHTML = '';
+
+  config.groups.forEach((group, gIdx) => {
+    const section = document.createElement('div');
+    section.className = 'section';
+    section.style.animationDelay = (0.2 + gIdx * 0.05) + 's';
+    section.innerHTML = '<div class="section-header"><div class="section-title">' + getGroupTitle(group.name) + '</div><div class="section-num">' + String(gIdx + 1).padStart(2, '0') + '</div></div>';
+
+    group.fields.forEach(field => {
+      currentValues[field.key] = field.default;
+      const wrap = document.createElement('div');
+      wrap.className = 'field';
+      const label = document.createElement('label');
+      label.textContent = getFieldLabel(field.key);
+      wrap.appendChild(label);
+
+      if (field.type === 'select') {
+        const sel = document.createElement('select');
+        sel.dataset.key = field.key;
+        field.options.forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt.value;
+          o.textContent = getOptionLabel(field.key, opt.value);
+          sel.appendChild(o);
+        });
+        sel.value = field.default;
+        sel.addEventListener('change', () => {
+          currentValues[field.key] = sel.value;
+          updateOutput();
+        });
+        wrap.appendChild(sel);
+      } else if (field.type === 'text') {
+        const inp = document.createElement('input');
+        inp.type = 'text';
+        inp.dataset.key = field.key;
+        inp.placeholder = getPlaceholder(field.key) || field.placeholder || '';
+        inp.value = field.default;
+        inp.addEventListener('input', () => {
+          currentValues[field.key] = inp.value;
+          updateOutput();
+        });
+        wrap.appendChild(inp);
+      } else if (field.type === 'range') {
+        const rw = document.createElement('div');
+        rw.className = 'range-wrap';
+        const inp = document.createElement('input');
+        inp.type = 'range';
+        inp.dataset.key = field.key;
+        inp.min = field.min;
+        inp.max = field.max;
+        inp.step = field.step;
+        inp.value = field.default;
+        const val = document.createElement('span');
+        val.className = 'range-value';
+        val.textContent = field.default;
+        inp.addEventListener('input', () => {
+          currentValues[field.key] = inp.value;
+          val.textContent = inp.value;
+          updateOutput();
+        });
+        rw.appendChild(inp);
+        rw.appendChild(val);
+        wrap.appendChild(rw);
+      }
+      section.appendChild(wrap);
+    });
+
+    if (group.name === '后处理与性能') {
+      left.appendChild(section);
+    } else {
+      right.appendChild(section);
+    }
+  });
+}
+
+// ===== Render Presets =====
+function renderPresets() {
+  const container = document.getElementById('presets');
+  container.innerHTML = '';
+  document.getElementById('presetCount').textContent = String(config.presets.length).padStart(2, '0');
+  config.presets.forEach((preset, idx) => {
+    const item = document.createElement('button');
+    item.className = 'preset-item';
+    item.innerHTML = '<div class="p-name">' + getPresetLabel(preset.name) + '</div><div class="p-desc">' + getPresetDesc(preset.name) + '</div>';
+    item.addEventListener('click', () => {
+      const isActive = item.classList.contains('active');
+      document.querySelectorAll('.preset-item').forEach(b => b.classList.remove('active'));
+      if (isActive) {
+        resetToDefault();
+      } else {
+        item.classList.add('active');
+        applyPreset(preset.values);
+      }
+    });
+    container.appendChild(item);
+  });
+}
+
+function applyPreset(values) {
+  Object.keys(values).forEach(key => {
+    currentValues[key] = values[key];
+    const el = document.querySelector('[data-key="' + key + '"]');
+    if (el) {
+      el.value = values[key];
+      if (el.type === 'range') el.nextElementSibling.textContent = values[key];
+    }
+  });
+  updateOutput();
+}
+
+function resetToDefault() {
+  if (!config) return;
+  config.groups.forEach(group => {
+    group.fields.forEach(field => {
+      currentValues[field.key] = field.default;
+      const el = document.querySelector('[data-key="' + field.key + '"]');
+      if (el) {
+        el.value = field.default;
+        if (el.type === 'range') el.nextElementSibling.textContent = field.default;
+      }
+    });
+  });
+  document.querySelectorAll('.preset-item').forEach(b => b.classList.remove('active'));
+  updateOutput();
+}
+
+
+// ===== Output command i18n =====
+const outputTexts = {
+  zh: { batch:'批量出图；', rec:'推荐', external:'外部协同', selfB:'AI起草', formal:'正式模式（默认）', quick:'快速草稿模式', noRef:'无参考图', singleRef:'有参考图（单张）', multiRef:'有多张参考图', portrait:'竖屏（推荐）', langEn:'英文（默认）', langZh:'中文', batchSize:'batch size ', autoSubject:'先读取旬物索引最新json再执行；', specifiedSubject:'指定主体：', castAuto:'档位按概率抽样不固定', castLarge:'偏大（4-6为主，画面丰富）', castFixed:'固定', titleAuto:'auto批次随机', titleWidth:'主标题字块占比 ', containerAuto:'随机选', stateAuto:'随机选用', styleFixed:'风格固定', seasonFixed:'季节固定', paletteOn:'色块后处理开启（条形色带，动态提取主色）；', silentOn:'静默模式（不显示中间过程，仅报错时显示）；', final:'过程文件不保留，只留final成品。' },
+  en: { batch:'Batch generation; ', rec:'Recommended', external:'External', selfB:'AI Draft', formal:'Formal mode (default)', quick:'Quick draft mode', noRef:'No reference', singleRef:'Single reference', multiRef:'Multiple references', portrait:'Portrait (rec)', langEn:'English (default)', langZh:'Chinese', batchSize:'batch size ', autoSubject:'Auto-select from seasonal index; ', specifiedSubject:'Subjects: ', castAuto:'Auto probability (not fixed)', castLarge:'Large (4-6, rich)', castFixed:'Fixed ', titleAuto:'auto random', titleWidth:'Title width ', containerAuto:'random', stateAuto:'random', styleFixed:'Style fixed ', seasonFixed:'Season fixed ', paletteOn:'Color palette on (bars, auto extract); ', silentOn:'Silent mode (errors only); ', final:'No temp files, keep final only.' },
+  ja: { batch:'バッチ生成；', rec:'推奨', external:'外部連携', selfB:'AI起草', formal:'フォーマル（デフォルト）', quick:'クイック下書き', noRef:'参考なし', singleRef:'参考1枚', multiRef:'参考複数', portrait:'縦長（推奨）', langEn:'英語（デフォルト）', langZh:'中国語', batchSize:'バッチサイズ ', autoSubject:'旬物索引から自動選択；', specifiedSubject:'指定主体：', castAuto:'確率サンプリング（固定なし）', castLarge:'大きめ（4-6中心）', castFixed:'固定', titleAuto:'autoランダム', titleWidth:'タイトル幅 ', containerAuto:'ランダム', stateAuto:'ランダム', styleFixed:'スタイル固定', seasonFixed:'季節固定', paletteOn:'カラーパレットオン；', silentOn:'サイレントモード；', final:'一時ファイル削除、finalのみ保持。' },
+  ko: { batch:'배치 생성; ', rec:'추천', external:'외부협업', selfB:'AI작성', formal:'포멀 (기본)', quick:'퀵 드래프트', noRef:'참고없음', singleRef:'참고 1장', multiRef:'참고 여러장', portrait:'세로 (추천)', langEn:'영어 (기본)', langZh:'중국어', batchSize:'배치 크기 ', autoSubject:'계절지수에서 자동선택; ', specifiedSubject:'지정 주체: ', castAuto:'확률샘플링 (고정안함)', castLarge:'큰쪽 (4-6, 풍부)', castFixed:'고정 ', titleAuto:'auto 랜덤', titleWidth:'제목 너비 ', containerAuto:'랜덤', stateAuto:'랜덤', styleFixed:'스타일 고정 ', seasonFixed:'계절 고정 ', paletteOn:'컬러팔레트 켜짐; ', silentOn:'사일런트 모드; ', final:'임시파일 삭제, final만 유지.' },
+  fr: { batch:'Génération par lot; ', rec:'Recommandé', external:'Externe', selfB:'Brouillon IA', formal:'Mode formel (défaut)', quick:'Mode brouillon rapide', noRef:'Aucune référence', singleRef:'Référence unique', multiRef:'Références multiples', portrait:'Portrait (rec)', langEn:'Anglais (défaut)', langZh:'Chinois', batchSize:'taille du lot ', autoSubject:'Sélection auto depuis index; ', specifiedSubject:'Sujets: ', castAuto:'Probabilité auto (non fixe)', castLarge:'Grand (4-6, riche)', castFixed:'Fixé ', titleAuto:'auto aléatoire', titleWidth:'Largeur titre ', containerAuto:'aléatoire', stateAuto:'aléatoire', styleFixed:'Style fixé ', seasonFixed:'Saison fixée ', paletteOn:'Palette couleur activée; ', silentOn:'Mode silencieux; ', final:'Pas de fichiers temp, garder final.' },
+  de: { batch:'Stapelgenerierung; ', rec:'Empfohlen', external:'Extern', selfB:'KI-Entwurf', formal:'Formaler Modus (Standard)', quick:'Schneller Entwurfsmodus', noRef:'Keine Referenz', singleRef:'Einzelreferenz', multiRef:'Mehrere Referenzen', portrait:'Hochformat (Empfohlen)', langEn:'Englisch (Standard)', langZh:'Chinesisch', batchSize:'Stapelgröße ', autoSubject:'Auto-Auswahl aus Index; ', specifiedSubject:'Motive: ', castAuto:'Auto-Wahrscheinlichkeit (nicht fest)', castLarge:'Groß (4-6, reich)', castFixed:'Fest ', titleAuto:'auto Zufall', titleWidth:'Titelbreite ', containerAuto:'Zufall', stateAuto:'Zufall', styleFixed:'Stil fest ', seasonFixed:'Saison fest ', paletteOn:'Farbpalette an; ', silentOn:'Stiller Modus; ', final:'Keine Temp-Dateien, nur final behalten.' },
+  es: { batch:'Generación por lote; ', rec:'Recomendado', external:'Externo', selfB:'Borrador IA', formal:'Modo formal (predeterminado)', quick:'Modo borrador rápido', noRef:'Sin referencia', singleRef:'Referencia única', multiRef:'Referencias múltiples', portrait:'Retrato (rec)', langEn:'Inglés (predeterminado)', langZh:'Chino', batchSize:'tamaño de lote ', autoSubject:'Selección auto desde índice; ', specifiedSubject:'Sujetos: ', castAuto:'Probabilidad auto (no fija)', castLarge:'Grande (4-6, rico)', castFixed:'Fijo ', titleAuto:'auto aleatorio', titleWidth:'Ancho título ', containerAuto:'aleatorio', stateAuto:'aleatorio', styleFixed:'Estilo fijo ', seasonFixed:'Temporada fija ', paletteOn:'Paleta color activada; ', silentOn:'Modo silencioso; ', final:'Sin archivos temp, guardar solo final.' },
+};
+function getOutputText(key) {
+  const dict = outputTexts[currentLang] || outputTexts.zh;
+  return dict[key] || outputTexts.zh[key] || key;
+}
+
+// ===== Generate Output =====
+function updateOutput() {
+  const v = currentValues;
+  const t = getOutputText;
+  let cmd = t('batch');
+  cmd += getOptionLabel('mode', v.mode) + '；';
+  cmd += v.performance === 'formal' ? t('formal') : t('quick');
+  cmd += '；';
+  cmd += v.reference_images === 'none' ? t('noRef') : (v.reference_images === 'single' ? t('singleRef') : t('multiRef'));
+  cmd += '，' + getOptionLabel('ratio', v.ratio) + '；';
+  cmd += (v.lang === 'en' ? t('langEn') : t('langZh')) + '；';
+  cmd += t('batchSize') + v.batch_size + '；';
+  if (v.subjects && v.subjects.trim()) {
+    cmd += t('specifiedSubject') + v.subjects.trim() + '；';
+  } else {
+    cmd += t('autoSubject');
+  }
+  cmd += getOptionLabel('cast_size', v.cast_size) + '；';
+  cmd += getOptionLabel('title_style', v.title_style) + '；';
+  cmd += t('titleWidth') + v.title_width + '；';
+  cmd += getOptionLabel('container', v.container) + '；';
+  cmd += getOptionLabel('state_overlay', v.state_overlay) + '；';
+  if (v.style !== 'auto') cmd += t('styleFixed') + v.style + '；';
+  if (v.season !== 'auto') cmd += t('seasonFixed') + v.season + '；';
+  if (v.color_palette === 'on') cmd += t('paletteOn');
+  if (v.silent === 'on') cmd += t('silentOn');
+  cmd += t('final');
+  document.getElementById('output').textContent = cmd;
+  document.getElementById('charCount').textContent = cmd.length + ' chars';
+}
+
+// ===== Copy =====
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  const text = document.getElementById('output').textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+  const btn = document.getElementById('copyBtn');
+  const dict = i18n[currentLang] || i18n.zh;
+  btn.textContent = dict.copied;
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = dict.copy;
+    btn.classList.remove('copied');
+  }, 2000);
+});
+
+document.getElementById('resetBtn').addEventListener('click', resetToDefault);
+
+// ===== Image Preview =====
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('fileInput').click();
+});
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const files = Array.from(e.target.files);
+  if (files.length === 0) return;
+  previewImages = files.map(f => ({ name: f.name, url: URL.createObjectURL(f) }));
+  currentPreviewIndex = 0;
+  renderPreview();
+});
+
+function renderPreview() {
+  const empty = document.getElementById('previewEmpty');
+  const img = document.getElementById('previewImg');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const toolbar = document.getElementById('previewToolbar');
+  const thumbs = document.getElementById('previewThumbs');
+  const count = document.getElementById('previewCount');
+  const num = document.getElementById('previewNum');
+  const dict = i18n[currentLang] || i18n.zh;
+
+  if (previewImages.length === 0) {
+    empty.style.display = 'block';
+    img.style.display = 'none';
+    prevBtn.style.display = 'none';
+    nextBtn.style.display = 'none';
+    toolbar.style.display = 'none';
+    thumbs.innerHTML = '';
+    count.textContent = dict.noImage;
+    num.textContent = '—';
+    return;
+  }
+
+  empty.style.display = 'none';
+  img.style.display = 'block';
+  // 主图加时间戳防缓存（blob/data 协议除外），扫描其他路径后与缩略图同步
+  const _mainUrl = previewImages[currentPreviewIndex].url || '';
+  img.src = /^(blob|data):/.test(_mainUrl) ? _mainUrl : _mainUrl + (_mainUrl.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
+  img.style.opacity = '0';
+  setTimeout(() => { img.style.opacity = '1'; }, 50);
+
+  prevBtn.style.display = previewImages.length > 1 ? 'flex' : 'none';
+  nextBtn.style.display = previewImages.length > 1 ? 'flex' : 'none';
+  toolbar.style.display = 'flex';
+  count.textContent = (currentPreviewIndex + 1) + ' / ' + previewImages.length;
+  num.textContent = String(currentPreviewIndex + 1).padStart(2, '0');
+
+  // 缩略图只显示当前预览的图片，切换上一张/下一张时自动同步
+  thumbs.innerHTML = '';
+  const currentItem = previewImages[currentPreviewIndex];
+  if (currentItem) {
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb active';
+    const tImg = document.createElement('img');
+    // 加时间戳避免浏览器缓存旧图（blob/data 协议除外），扫描新路径后缩略图同步刷新
+    const baseUrl = currentItem.url || '';
+    tImg.src = /^(blob|data):/.test(baseUrl) ? baseUrl : baseUrl + (baseUrl.indexOf('?') >= 0 ? '&' : '?') + '_t=' + Date.now();
+    tImg.alt = currentItem.name || 'thumb';
+    tImg.onerror = function() {
+      this.style.display = 'none';
+      thumb.innerHTML = '<span style="color:rgba(245,240,232,0.4);font-size:10px;">IMG</span>';
+    };
+    thumb.appendChild(tImg);
+    thumbs.appendChild(thumb);
+  }
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  currentPreviewIndex = (currentPreviewIndex - 1 + previewImages.length) % previewImages.length;
+  renderPreview();
+});
+document.getElementById('nextBtn').addEventListener('click', () => {
+  currentPreviewIndex = (currentPreviewIndex + 1) % previewImages.length;
+  renderPreview();
+});
+
+function getCurrentImageName() {
+  if (previewImages.length === 0) return 'preview.png';
+  return previewImages[currentPreviewIndex].name || 'preview.png';
+}
+document.getElementById('downloadBtn').addEventListener('click', async () => {
+  if (previewImages.length === 0) return;
+  const img = previewImages[currentPreviewIndex];
+  const filename = getCurrentImageName();
+  try {
+    // 使用showSaveFilePicker弹出另存为对话框，让用户选择保存路径
+    if (window.showSaveFilePicker) {
+      const resp = await fetch(img.url);
+      const blob = await resp.blob();
+      const handle = await window.showSaveFilePicker({
+        suggestedName: filename,
+        types: [{
+          description: 'PNG Image',
+          accept: { 'image/png': ['.png'] },
+        }],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+    } else {
+      // 浏览器不支持showSaveFilePicker，回退到传统下载
+      const a = document.createElement('a');
+      a.href = img.url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  } catch (e) {
+    // 用户取消选择或其他错误，回退到传统下载
+    if (e.name !== 'AbortError') {
+      const a = document.createElement('a');
+      a.href = img.url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }
+});
+document.getElementById('saveAsBtn').addEventListener('click', async () => {
+  if (previewImages.length === 0) return;
+  const img = previewImages[currentPreviewIndex];
+  const filename = getCurrentImageName();
+  try {
+    // 使用showSaveFilePicker弹出另存为对话框，让用户选择保存路径
+    if (window.showSaveFilePicker) {
+      const resp = await fetch(img.url);
+      const blob = await resp.blob();
+      const handle = await window.showSaveFilePicker({
+        suggestedName: filename,
+        types: [{
+          description: 'PNG Image',
+          accept: { 'image/png': ['.png'] },
+        }],
+      });
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+    } else {
+      // 浏览器不支持showSaveFilePicker，回退到传统下载
+      const resp = await fetch(img.url);
+      const blob = await resp.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    }
+  } catch (e) {
+    // 用户取消选择或其他错误
+    if (e.name !== 'AbortError') {
+      const a = document.createElement('a');
+      a.href = img.url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }
+});
+
+document.getElementById('fullscreenBtn').addEventListener('click', openFullscreen);
+document.getElementById('closeFullscreen').addEventListener('click', closeFullscreen);
+document.getElementById('fsPrev').addEventListener('click', () => {
+  currentPreviewIndex = (currentPreviewIndex - 1 + previewImages.length) % previewImages.length;
+  document.getElementById('fsImg').src = previewImages[currentPreviewIndex].url;
+});
+document.getElementById('fsNext').addEventListener('click', () => {
+  currentPreviewIndex = (currentPreviewIndex + 1) % previewImages.length;
+  document.getElementById('fsImg').src = previewImages[currentPreviewIndex].url;
+});
+function openFullscreen() {
+  if (previewImages.length === 0) return;
+  document.getElementById('fsImg').src = previewImages[currentPreviewIndex].url;
+  document.getElementById('fullscreenOverlay').classList.add('active');
+}
+function closeFullscreen() {
+  document.getElementById('fullscreenOverlay').classList.remove('active');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('fullscreenOverlay').classList.contains('active')) {
+    if (e.key === 'Escape') closeFullscreen();
+    if (e.key === 'ArrowLeft') document.getElementById('fsPrev').click();
+    if (e.key === 'ArrowRight') document.getElementById('fsNext').click();
+  } else if (previewImages.length > 0) {
+    if (e.key === 'ArrowLeft') document.getElementById('prevBtn').click();
+    if (e.key === 'ArrowRight') document.getElementById('nextBtn').click();
+  }
+});
+
+// ===== Init =====
+initTheme();
+initLangSwitch();
+initSeasonBtn();
+applyLang(currentLang);
+applySeason(currentSeason);
+loadConfig();
+// 页面加载时自动扫描项目目录
+setTimeout(() => { if (typeof scanProject === 'function') scanProject(); }, 500);
+</script>
+
+</body>
+</html>

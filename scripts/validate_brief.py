@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-__version__ = "2.1.0"
+__version__ = "3.0.0"
 """
 validate_brief.py —— Brief JSON 硬校验门（brief@1.1，唯一规划格式）。
 在 build_from_brief.py 之前必须通过：errors 致命（退出码 1，不允许进 build）；warnings 仅提示。
-纯标准库，可在普通命令行与浏览器 computer_use 代码环境复用。
+纯标准库，可在普通命令行与浏览器 computer_use 代码环境复用（director_dom.brief_errors 即本文件函数）。
 
 用法:
     python validate_brief.py brief.json
@@ -38,7 +38,7 @@ def _similar(a, b):
 
 
 def brief_errors(b):
-    """返回 (errors, warnings)。b 为 dict。供 build_from_brief / self_skeleton 复用。"""
+    """返回 (errors, warnings)。b 为 dict。供 build_from_brief / director_dom 复用。"""
     e, w = [], []
     if not isinstance(b, dict):
         return ["brief 不是 JSON 对象"], []
@@ -49,8 +49,8 @@ def brief_errors(b):
             e.append(f"缺少顶层字段: {k}")
     if b.get("schema") != "brief@1.1":
         w.append('schema 非 "brief@1.1"（旧版可跑，建议升级）')
-    if b.get("source") not in ("self",):
-        e.append('source 必须是 "self"（external 模式已随 v2.1.0 精简移除）')
+    if b.get("source") not in ("external", "self"):
+        e.append('source 必须是 "external" 或 "self"')
     if b.get("style") not in STYLES:
         e.append(f"style 非法: {b.get('style')}（应 S1/S2/S3）")
     if b.get("lang") not in LANGS:
@@ -152,12 +152,12 @@ def brief_errors(b):
                 e.append("en 模式 season_line 不能为空（英文大写季节）")
             elif season != season.upper():
                 w.append("en 模式 season_line 建议全大写")
-            # latin：无学名可留空（build 跳过 latin 行）；有值则必须为大写学名
-            if latin:
-                if latin.upper() == "TBD":
-                    w.append("latin=TBD：交付前需补准确学名，或留空跳过 latin 行")
-                elif latin != latin.upper():
-                    e.append("en 模式 latin 必须为大写学名（如 PUNICA GRANATUM）；无学名可留空跳过")
+            if not latin:
+                pass  # 空 latin 合法：叠字时跳过 latin 行（无学名则不显示）
+            elif latin.upper() == "TBD":
+                w.append("latin=TBD：交付前需补准确学名，或留空跳过 latin 行")
+            elif latin != latin.upper():
+                e.append("en 模式 latin 必须为大写学名（如 PUNICA GRANATUM）；无学名可留空跳过")
         elif lang == "zh":
             if latin:
                 e.append("zh 模式 latin 必须为空串（中文排版不附学名）")

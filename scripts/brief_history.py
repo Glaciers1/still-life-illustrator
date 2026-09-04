@@ -12,7 +12,7 @@ brief_history.py —— 已出 brief 的轻量历史，用于批量时自动去�
   python brief_history.py path                                 # 打印将使用的历史路径
 起草新 brief 前先 `recent 8`，主体/档位/风格/视角对/标题任一高度重叠就换一项。
 """
-import json, os, argparse, datetime
+import json, os, sys, argparse, datetime
 
 
 def default_path():

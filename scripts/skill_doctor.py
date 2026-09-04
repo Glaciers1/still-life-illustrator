@@ -9,7 +9,7 @@ skill_doctor.py —— still-life-illustrator 技能自诊断脚本。
   3. 双副本 (Profile 1 / Default) MD5 一致性
   4. prompt-blocks.md 锚点完整性 (build_from_brief 依赖的 9 个块)
   5. 旬物索引条目数健康度 (应 >= EXPECTED_INDEX_ENTRIES=350)
-  6. 关键脚本可导入性 (validate_brief / build_from_brief / creative_generator / self_skeleton / self_merge)
+  6. 关键脚本可导入性 (validate_brief / build_from_brief / director_dom / self_skeleton / self_merge)
   7. brief-schema 与 validate_brief 字段一致性 (schema 中提到的字段 validate 是否检查)
 
 用法:
@@ -98,13 +98,6 @@ def check_md_references(diag, skill_dir):
         'page_text.txt', 'batch_spec.json', 'subjects.txt',
         'render_status.json', 'render_status.jsonl',
         'used_subjects.json', 'prepared_subjects.json',
-        'batch_summary.json', 'creative_library.json',
-    }
-    # 变更日志/版本说明中明确声明"已移除/已并入"的旧文件名（历史记录，非真实悬空引用）
-    REMOVED_WHITELIST = {
-        'quick_batch.py', 'start_panel.py', 'director-contract.md',
-        'director_dom.py', 'panel_config.json', 'panel_pro.html',
-        '_run_panel.vbs', 'performance-modes.md',
     }
     dangling = []
     for mf in md_files:
@@ -112,7 +105,7 @@ def check_md_references(diag, skill_dir):
         content = open(mf, encoding='utf-8-sig').read()
         refs = set(ref_pattern.findall(content))
         for ref in refs:
-            if ref in all_filenames or ref == 'SKILL.md' or ref in RUNTIME_WHITELIST or ref in REMOVED_WHITELIST:
+            if ref in all_filenames or ref == 'SKILL.md' or ref in RUNTIME_WHITELIST:
                 continue
             # 排除 *_brief.json / *_overlay.json 等命名模式（运行时输出）
             if ref.endswith('_brief.json') or ref.endswith('_overlay.json') or ref.endswith('_A.txt') or ref.endswith('_B.txt') or ref.endswith('validation_failed.json'):
@@ -227,7 +220,7 @@ def check_imports(diag, skill_dir):
     """6. 关键脚本可导入性"""
     scripts_dir = os.path.join(skill_dir, "scripts")
     sys.path.insert(0, scripts_dir)
-    key_modules = ["validate_brief", "build_from_brief", "creative_generator", "self_skeleton", "self_merge"]
+    key_modules = ["validate_brief", "build_from_brief", "director_dom", "self_skeleton", "self_merge"]
     for mod in key_modules:
         try:
             __import__(mod)

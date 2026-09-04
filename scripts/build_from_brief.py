@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-__version__ = "2.1.0"
+__version__ = "3.0.0"
 """
-build_from_brief.py —— 把 brief@1.1（self 单一来源）拼装成两条完整「无字」生图提示词 + 叠字参数。
+build_from_brief.py —— 把 brief@1.1（external/self 同源）拼装成两条完整「无字」生图提示词 + 叠字参数。
 【单一来源】公共技术段（PALETTE/M1/M2_EXTRA/M3/HERO/CLUSTER/EDGE/TEXT_BLANK/NO_TEXT）
 运行时直接从 references/prompt-blocks.md 的 `<!--block:NAME-->` 锚点解析，不再维护第二份文字；
 仅当模块库缺失或锚点损坏时回退内置 _FALLBACK 并告警。`--show-blocks` 查看每段来源（一致性自检）。

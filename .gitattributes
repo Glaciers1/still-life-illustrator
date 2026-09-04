@@ -18,9 +18,15 @@ Makefile text eol=lf
 *.toml text eol=lf
 *.cfg text eol=lf
 *.ini text eol=lf
-.flake8 text eol=lf
+*.flake8 text eol=lf
 .gitignore text eol=lf
 .gitattributes text eol=lf
+
+# Web
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.vbs text eol=lf
 
 # Binary
 *.ttf binary

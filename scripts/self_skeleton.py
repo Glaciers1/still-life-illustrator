@@ -1,22 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-__version__ = "2.1.0"
-# v2.0: 新增 --auto-creative 参数，集成 CreativeGenerator 自动填充创意字段，跳过 LLM 补创意环节
+__version__ = "3.0.0"
 """
-self_skeleton.py —— self 批量骨架生成器（v2.0 合并 quick_batch 能力后的唯一批量入口）。
+self_skeleton.py —— self 批量骨架生成器。
 
 把一份"批次选题清单"（或简单主体列表）一次性变成 N 份 brief@1.1 骨架：
 固定字段（id/source/style/cast_size/ratio/lang/hero/secondary 结构/palette/views 角度构图/text 字体排法）
 全部按规则填好并保证批次内档位/风格/季节/视角均衡；
-真正需要创意的字段（views[].pv_en、text.poem、text.latin、text.title）默认留 TBD，
-由 LLM 后续用 self_merge.py 合并（selfA 路径）；加 --auto-creative 则跳过 LLM，
-由 CreativeGenerator（预制库优先 + 模板兜底）自动填充。
-
-【v2.0 合并】原 quick_batch.py 已并入本脚本，新增：
-  --build         骨架+创意+拼装一步完成（直接输出 *_A.txt / *_B.txt / *_overlay.json / batch_summary.json）
-  --cast-size     固定档位 auto/large/1-6（默认 auto 按概率均衡；large=Abundant~Lush 4-6 大档位）
-  --container     固定容器 auto/ceramic/wood/bamboo/metal/glass/stone/fabric（写入 brief._container_override）
-  --skip-validate --build 拼装时跳过 brief 校验
+真正需要创意的字段（views[].pv_en、text.poem、text.latin、text.title）留 TBD，
+由 LLM 后续用 self_merge.py 合并，大幅减少对话 token。
 
 批量规模：--batch-size 2/5/10/15/20/30（默认 10），实际数量以主体列表为准。
 
@@ -30,27 +22,12 @@ self_skeleton.py —— self 批量骨架生成器（v2.0 合并 quick_batch 能
   # 方式三：命令行直接列主体
   python self_skeleton.py --names "巴斯克芝士蛋糕,马卡龙,可露丽" --outdir ./batch20
 
-  # 方式四（v2.0 一步出提示词，等价原 quick_batch）：骨架+自动创意+拼装
-  python self_skeleton.py --names "栗子蛋糕" --auto-creative --build --cast-size 3 --container bamboo --outdir ./batch
-
 输出:
-  不加 --build：<outdir>/B001_brief.json … B0NN_brief.json（骨架，创意按 --auto-creative 决定）
-               <outdir>/creative_template.json（LLM 补创意模板）
-  加 --build：额外产出 <outdir>/B001_A.txt、B001_B.txt、B001_overlay.json … 与 batch_summary.json
+  <outdir>/B001_brief.json … B0NN_brief.json   （骨架，创意字段 TBD）
+  <outdir>/creative_template.json                 （LLM 补创意的紧凑格式模板）
   终端打印紧凑摘要表
 """
-import json, os, sys, argparse, random, re, glob, traceback
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-try:
-    from creative_generator import CreativeGenerator
-except Exception:
-    CreativeGenerator = None
-try:
-    from build_from_brief import build_one, brief_errors
-except Exception as e:
-    print(f"[warn] 导入 build_from_brief 失败: {e}，--build 不可用", file=sys.stderr)
-    build_one = None
-    brief_errors = None
+import json, os, sys, argparse, random, re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SKILL_ROOT = os.path.normpath(os.path.join(HERE, ".."))
@@ -310,7 +287,7 @@ def auto_select_subjects(n, index_text=None, avoid=None, rng=None, season_filter
     - avoid: 要排除的主体名称列表（历史去重）
     - rng: random.Random 实例
     - season_filter: 可选题材分区（春/夏/秋/冬/全年），指定后只从该分区抽
-      （分区第五类「全年·常备」用）；JSON 缺失无法分区时自动降级全库随机。"""
+      （panel 第五类「全年·常备」用）；JSON 缺失无法分区时自动降级全库随机。"""
     import random as _r
     rng = rng or _r
     if season_filter:
@@ -566,8 +543,7 @@ def _pick_state_overlay(seasonal_info, rng):
 
 
 def make_skeleton(idx, subject, style, cast_size, season, angle_pair, compose_pair,
-                   lang, ratio, id_prefix, title_style, rng=None, seasonal_info=None,
-                   auto_creative=False, creative_gen=None):
+                   lang, ratio, id_prefix, title_style, rng=None, seasonal_info=None):
     """生成单份 brief 骨架 dict。"""
     rng = rng or random
     pid = f"{id_prefix}{idx:03d}"
@@ -665,39 +641,6 @@ def make_skeleton(idx, subject, style, cast_size, season, angle_pair, compose_pa
             "seasonal_info": seasonal_info,
         },
     }
-    # v2.0: 自动填充创意字段（跳过 LLM 补创意）
-    if auto_creative and creative_gen is not None:
-        hero_en_val = brief["hero"].get("en", "")
-        secondary_val = brief.get("secondary", [])
-        states_val = brief["hero"].get("states", "whole, natural state")
-        creative = creative_gen.get_creative(
-            name,
-            hero_en=hero_en_val,
-            style=style,
-            cast_size=cast_size,
-            container="auto",
-            season=season,
-            angle_a=a_angle_cn,
-            angle_b=b_angle_cn,
-            compose_a=a_compose_cn,
-            compose_b=b_compose_cn,
-            secondary=secondary_val,
-            seasonal_info=seasonal_info,
-            states=states_val,
-        )
-        # 填充 pv_en
-        if isinstance(creative.get("pv_en"), dict):
-            brief["views"][0]["pv_en"] = creative["pv_en"].get("A", "")
-            brief["views"][1]["pv_en"] = creative["pv_en"].get("B", "")
-        # 填充文字
-        if creative.get("title"):
-            brief["text"]["title"] = creative["title"]
-        # latin：必须为大写学名；无学名（空）则置空，build 会跳过 latin 行
-        _latin = (creative.get("latin") or "").strip()
-        brief["text"]["latin"] = _latin.upper() if _latin else ""
-        if creative.get("poem") and isinstance(creative["poem"], list):
-            brief["text"]["poem"] = creative["poem"]
-
     return brief
 
 
@@ -790,20 +733,9 @@ def main():
                     help="逗号分隔的已用主体列表（历史去重），自动选题时排除")
     ap.add_argument("--history", default="",
                     help="历史已用主体 JSON 文件路径（数组格式），生成时标注重复警告，自动选题时排除")
-    ap.add_argument("--auto-creative", action="store_true",
-                    help="v2.0: 自动填充创意字段（pv_en/poem/latin/title），跳过 LLM 补创意环节，使用 CreativeGenerator 模板生成或预制库查询")
-    ap.add_argument("--creative-library", default="",
-                    help="v2.0: 预制创意库路径（默认 references/creative_library.json）")
     ap.add_argument("--title-style", default="auto",
                     choices=["auto", "normal", "italic", "wave", "arch", "scatter"],
                     help="标题排法：auto=批次随机均衡（默认），或固定 normal/italic/wave/arch/scatter 全批统一")
-    ap.add_argument("--cast-size", default="auto",
-                    help="固定档位：auto/large/1-6（默认auto均衡；large=Abundant~Lush 4-6 大档位）")
-    ap.add_argument("--container", default="auto",
-                    help="固定容器：auto/ceramic/wood/bamboo/metal/glass/stone/fabric（默认auto；写入 brief._container_override）")
-    ap.add_argument("--skip-validate", action="store_true", help="--build 拼装时跳过 brief 校验")
-    ap.add_argument("--build", action="store_true",
-                    help="v2.0：一步拼装出 A/B 提示词与 overlay（原 quick_batch 行为），配合 --auto-creative 直接可生图")
     args = ap.parse_args()
 
     rng = random.Random(args.seed) if args.seed is not None else random.Random()
@@ -842,21 +774,8 @@ def main():
     # 加载旬物索引
     index_text = None if args.no_seasonal_index else _load_seasonal_index()
 
-    # 均衡分配（--cast-size 支持 auto/large/1-6，原 quick_batch 行为）
-    if args.cast_size == "auto":
-        cast_sizes = balanced_assign(n, CAST_SIZES, CAST_PROBS, rng)
-    elif args.cast_size == "large":
-        cast_sizes = balanced_assign(n, [4, 5, 6], [0.5, 0.3, 0.2], rng)
-    else:
-        try:
-            cs = int(args.cast_size)
-            if 1 <= cs <= 6:
-                cast_sizes = [cs] * n
-            else:
-                raise ValueError
-        except ValueError:
-            print(f"[warn] 无法解析 --cast-size={args.cast_size}（需 1-6/large/auto），回退 auto 均衡")
-            cast_sizes = balanced_assign(n, CAST_SIZES, CAST_PROBS, rng)
+    # 均衡分配
+    cast_sizes = balanced_assign(n, CAST_SIZES, CAST_PROBS, rng)
     if args.style != "auto":
         styles = [args.style] * n
     else:
@@ -871,15 +790,6 @@ def main():
         title_styles = [args.title_style] * n
     else:
         title_styles = [rng.choice(TITLE_STYLES) for _ in range(n)]
-
-    # v2.0: 初始化 CreativeGenerator
-    creative_gen = None
-    if args.auto_creative and CreativeGenerator is not None:
-        lib_path = args.creative_library or None
-        creative_gen = CreativeGenerator(library_path=lib_path, rng=rng)
-        print(f"[v2.0] 自动创意模式已启用，跳过 LLM 补创意环节")
-    elif args.auto_creative and CreativeGenerator is None:
-        print("[warn] creative_generator.py 导入失败，auto-creative 不可用，创意字段仍为 TBD")
 
     # 生成骨架
     skeletons = []
@@ -899,12 +809,7 @@ def main():
             title_style=title_styles[i],
             rng=rng,
             seasonal_info=seasonal_info,
-            auto_creative=args.auto_creative,
-            creative_gen=creative_gen,
         )
-        # 容器指定：记录到 brief._container_override（原 quick_batch 行为）
-        if args.container != "auto":
-            sk["_container_override"] = args.container
         skeletons.append(sk)
         fp = os.path.join(outdir, f"{sk['id']}_brief.json")
         with open(fp, "w", encoding="utf-8") as f:
@@ -932,62 +837,7 @@ def main():
     print(f"档位分布: {dict(Counter(CAST_NAMES.get(c, str(c)) for c in cast_sizes))}")
     print(f"风格分布: {dict(Counter(styles))}")
     print(f"季节分布: {dict(Counter(seasons))}")
-    # v2.0: --build 一步拼装（原 quick_batch 行为）
-    if args.build:
-        if build_one is None:
-            print("[错误] build_from_brief 导入失败，--build 不可用")
-            sys.exit(1)
-        print(f"\n--- 拼装提示词（--build）---")
-        ok_count = 0
-        fail_count = 0
-        prompts = []
-        for sk in skeletons:
-            pid = sk["id"]
-            try:
-                if not args.skip_validate and brief_errors is not None:
-                    errors, _ = brief_errors(sk)
-                    if errors:
-                        print(f"  [FAIL] {pid}: {'; '.join(errors)}")
-                        fail_count += 1
-                        continue
-                res = build_one(sk, outdir, pid=pid, write=True)
-                words_a = len(res["prompts"].get("A", "").split())
-                words_b = len(res["prompts"].get("B", "").split())
-                print(f"  [OK] {pid}: A={words_a}w B={words_b}w")
-                ok_count += 1
-                prompts.append({
-                    "id": pid,
-                    "hero": sk.get("hero", {}).get("name", ""),
-                    "style": sk.get("style", ""),
-                    "cast_size": sk.get("cast_size", ""),
-                    "A": os.path.join(outdir, f"{pid}_A.txt"),
-                    "B": os.path.join(outdir, f"{pid}_B.txt"),
-                    "overlay": os.path.join(outdir, f"{pid}_overlay.json"),
-                    "words": f"A={words_a} B={words_b}",
-                })
-            except Exception as e:
-                print(f"  [FAIL] {pid}: {e}")
-                traceback.print_exc()
-                fail_count += 1
-        from datetime import datetime
-        summary = {
-            "tool": "self_skeleton.py v2.0 (--build)",
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "total": n, "ok": ok_count, "fail": fail_count,
-            "style": args.style, "cast_size": args.cast_size,
-            "container": args.container, "season": args.season,
-            "auto_creative": args.auto_creative,
-            "prompts": prompts,
-        }
-        with open(os.path.join(outdir, "batch_summary.json"), "w", encoding="utf-8") as f:
-            json.dump(summary, f, ensure_ascii=False, indent=2)
-        print(f"\n===== 拼装完成：成功 {ok_count} / 失败 {fail_count} =====")
-        print(f"提示词文件: {outdir}")
-        print(f"[v2.0] 已一步拼装完成。下一步：读取 *_A.txt / *_B.txt，调用 image_gen 批量生图。")
-    elif args.auto_creative:
-        print(f"\n[v2.0] 自动创意模式：创意字段已填充，跳过 LLM 补创意。下一步：用 build_from_brief.py --batch <目录> 拼装提示词，然后生图。")
-    else:
-        print(f"\n下一步：把 creative_template.json 发给 LLM 补全 pv_en/poem/latin/title，然后用 self_merge.py 合并。")
+    print(f"\n下一步：把 creative_template.json 发给 LLM 补全 pv_en/poem/latin/title，然后用 self_merge.py 合并。")
 
 
 if __name__ == "__main__":

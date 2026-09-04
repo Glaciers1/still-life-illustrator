@@ -13,7 +13,7 @@
 
 ```bash
 # 1. 生成骨架（含 creative 空模板）
-python scripts/self_skeleton.py --names "巴斯克芝士蛋糕,阳光玫瑰葡萄" --batch-size 2 --out ./skeleton
+python scripts/self_skeleton.py --names "巴斯克芝士蛋糕,阳光玫瑰葡萄" --batch-size 2 --outdir ./skeleton
 
 # 2. LLM 补创意：将 skeleton_creative_template.json 填为 creative_filled.json
 #    （填写英文标题、A/B 差异化 pv_en、短诗两行、大写学名或留空）
@@ -28,14 +28,24 @@ python scripts/build_from_brief.py --batch ./              # 生成 4 份提示�
 # 5. 生图 → prep_images 校正 → overlay_text 叠字（同模式1）
 ```
 
+## 功能版 self_skeleton 额外参数
+
+| 参数 | 说明 |
+|------|------|
+| `--spec` | 批次选题清单 JSON（含全局约束） |
+| `--auto-subjects` | 无主体输入时自动从旬物索引 374 条随机选择 |
+| `--avoid-subjects` | 历史去重主体列表 |
+| `--history` | 历史已用主体 JSON（自动排除+重复警告） |
+| `--title-style` | 标题排法：auto/normal/italic/wave/arch/scatter |
+
 ## 关键文件
 
 | 文件 | 说明 |
 |------|------|
-| `skeleton_creative_template.json` | self_skeleton 输出的创意空模板（pv_en/poem/latin 待填） |
-| `creative_filled.json` | LLM 补创意后的完整文件（BASQUE BURN / SHINE MUSCAT） |
+| `skeleton_creative_template.json` | self_skeleton 输出的创意空模板 |
+| `creative_filled.json` | LLM 补创意后的完整文件 |
 | `B001_brief.json` / `B002_brief.json` | self_merge 合并后的完整 brief |
-| `B001_A_prompt.txt` ~ `B002_B_prompt.txt` | 4 份生图提示词（无中文泄漏） |
+| `B001_A_prompt.txt` ~ `B002_B_prompt.txt` | 4 份生图提示词 |
 | `B001_overlay.json` / `B002_overlay.json` | 叠字配置 |
 
 ## LLM 补创意要点

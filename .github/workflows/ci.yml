@@ -28,4 +28,4 @@ jobs:
       - name: Run tests
         run: python -m pytest tests/ -v
       - name: Lint
-        run: python -m flake8 scripts/ --config=.flake8
+        run: python -m flake8 scripts/ panel/ --config=.flake8
