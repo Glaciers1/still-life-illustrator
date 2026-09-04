@@ -1,0 +1,32 @@
+{
+  "common": {
+    "title": "STRAWBERRIES",
+    "title_font": "sans",
+    "title_style": "normal",
+    "title_size_px": 120,
+    "subtitle_size_px": 20,
+    "title_width": 0.3,
+    "title_color": "#A84040",
+    "subtitle_lines": [
+      "Red jewels in spring light,",
+      "sweetness held in white bowls.",
+      "",
+      "EARLY SPRING",
+      "FRAGARIA × ANANASSA"
+    ],
+    "subtitle_font": "type",
+    "sub_ratio": 0.25,
+    "sub_color": "#8A7A66",
+    "lang": "en"
+  },
+  "views": {
+    "A": {
+      "sub_xy": "78%,86%",
+      "title_pos": "top-center"
+    },
+    "B": {
+      "sub_xy": "76%,26%",
+      "title_pos": "top-center"
+    }
+  }
+}

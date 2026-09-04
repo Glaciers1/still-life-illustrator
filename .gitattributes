@@ -1,0 +1,32 @@
+# Auto detect text files and perform LF normalization
+* text=auto eol=lf
+
+# Python
+*.py text eol=lf
+*.pyi text eol=lf
+
+# Markdown / docs
+*.md text eol=lf
+*.txt text eol=lf
+LICENSE text eol=lf
+Makefile text eol=lf
+
+# Config
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.cfg text eol=lf
+*.ini text eol=lf
+.flake8 text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Binary
+*.ttf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary

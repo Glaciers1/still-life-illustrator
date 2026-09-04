@@ -1,0 +1,19 @@
+[flake8]
+max-line-length = 120
+extend-ignore = E203, W503
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    tests/fixtures
+# 行宽 120 全局生效；
+# 下列文件豁免 E501——超长行几乎全为提示词/文案数据串（_FALLBACK 块、诊断模板等），
+# 拆行会破坏字符串可读性与 md5 稳定性，故按文件豁免而非全局忽略。
+per-file-ignores =
+    scripts/self_skeleton.py:E402,E501
+    scripts/build_from_brief.py:E501
+    scripts/brief_history.py:E501
+    scripts/overlay_text.py:E501
+    scripts/skill_doctor.py:E501
+    scripts/validate_brief.py:E501

@@ -1,0 +1,57 @@
+{
+  "schema": "brief@1.1",
+  "id": "TEST01",
+  "source": "self",
+  "season": "初冬",
+  "style": "S1",
+  "style_reason": "单体大留白偏S1",
+  "cast_size": 1,
+  "ratio": "3:4",
+  "lang": "en",
+  "hero": {
+    "name": "柚子",
+    "en": "pomelo",
+    "count": 1,
+    "states": "whole, one small leaf attached"
+  },
+  "secondary": [],
+  "props": "a shallow ceramic plate on a linen cloth",
+  "palette": {
+    "overall": "暖米白托底、整体中低饱和",
+    "accent": "柚皮嫩黄约10%",
+    "bg": "#F3EDE2"
+  },
+  "views": [
+    {
+      "tag": "A",
+      "angle": "微俯60°",
+      "compose": "居中对称，柚居中偏下大留白",
+      "title_blank": "上方居中",
+      "sub_blank": "左上",
+      "pv_en": "A slightly high-angle view of one whole pomelo with a small leaf attached, resting on a shallow ceramic plate on a linen cloth. The pomelo has a thick pale-yellow rind with subtle texture and a rounded slightly flattened shape. Soft diffused light from the upper left creates a gentle form shadow on the right side. The linen cloth has visible weave texture in warm ivory tones. Centered symmetrical composition with the pomelo placed slightly below center, generous negative space above and around, at least one third clean empty space. Exactly one pomelo (count carefully), no other fruit or props."
+    },
+    {
+      "tag": "B",
+      "angle": "0°平视",
+      "compose": "三分偏心，柚居右下，上方整片留白",
+      "title_blank": "上方居中",
+      "sub_blank": "右下",
+      "pv_en": "An eye-level frontal view of one whole pomelo with a small leaf attached, placed at the lower right third intersection on a linen cloth with a shallow ceramic plate underneath. The pomelo shows its rounded pale-yellow rind facing the viewer with subtle dimpled texture. Soft diffused light from the right creates a gentle shadow extending to the left. The background is warm ivory textured paper with one large pale yellow-green color wash blooming softly. Rule-of-thirds off-center composition with large negative space on the upper left, at least one third clean empty space. Exactly one pomelo (count carefully), no other fruit or props."
+    }
+  ],
+  "text": {
+    "title": "POMELO",
+    "title_font": "serif",
+    "title_style": "normal",
+    "title_width": 0.33,
+    "title_color": "#9A8457",
+    "poem": [
+      "Heavy winter sun,",
+      "slow gold in the rind."
+    ],
+    "season_line": "EARLY WINTER",
+    "latin": "CITRUS MAXIMA",
+    "sub_ratio": 0.22,
+    "sub_color": "#8A7A66"
+  }
+}

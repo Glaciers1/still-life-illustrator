@@ -1,0 +1,72 @@
+{
+  "schema": "brief@1.1",
+  "id": "TEST02",
+  "source": "self",
+  "season": "深秋",
+  "style": "S2",
+  "style_reason": "多物件场景偏S2",
+  "cast_size": 3,
+  "ratio": "3:4",
+  "lang": "en",
+  "hero": {
+    "name": "柿子",
+    "en": "persimmon",
+    "count": 2,
+    "states": "whole, glossy orange-red, one with stem attached"
+  },
+  "secondary": [
+    {
+      "name": "板栗",
+      "en": "chestnut",
+      "count": 3,
+      "states": "whole in shell, scattered near the base",
+      "place": "resting on the wooden tray near the hero with a soft contact shadow"
+    },
+    {
+      "name": "干桂花",
+      "en": "dried osmanthus",
+      "count": 1,
+      "states": "a small sprinkle of golden dried flowers",
+      "place": "resting on the wooden tray near the hero with a soft contact shadow"
+    }
+  ],
+  "props": "a wooden tray with a linen cloth underneath",
+  "palette": {
+    "overall": "暖橙棕托底、整体中低饱和",
+    "accent": "柿红约15%",
+    "bg": "#EDE0D0"
+  },
+  "views": [
+    {
+      "tag": "A",
+      "angle": "45°俯角",
+      "compose": "居中聚拢，柿为主簇，板栗散落周围",
+      "title_blank": "上方居中",
+      "sub_blank": "左下",
+      "pv_en": "A 45-degree high-angle view of two whole persimmons with glossy orange-red skin, one with a brown stem attached, forming one tight main cluster at the center of a wooden tray. Three whole chestnuts in dark brown shells are scattered near the base of the persimmons, within one to two body lengths, touching the tray surface with soft contact shadows. A small sprinkle of golden dried osmanthus flowers adds a delicate accent. The linen cloth underneath has visible weave texture in warm beige tones. Soft directional light from the upper left creates gentle form shadows. Centered composition with the main cluster slightly below center, generous negative space above, at least one third clean empty space. Exactly two persimmons and three chestnuts (count carefully), no other fruit or props."
+    },
+    {
+      "tag": "B",
+      "angle": "0°平视",
+      "compose": "三分偏心，柿居左下，板栗向右上方散落",
+      "title_blank": "上方居中",
+      "sub_blank": "右下",
+      "pv_en": "An eye-level frontal view of two whole persimmons with glossy orange-red skin placed at the lower left third intersection on a wooden tray. Three whole chestnuts in dark brown shells are scattered toward the upper right, each resting on the tray with a soft contact shadow, within one to two body lengths of the main cluster. A small sprinkle of golden dried osmanthus flowers adds a delicate accent near the base. The background is warm beige textured paper with a subtle color wash. Soft directional light from the right creates gentle shadows extending to the left. Rule-of-thirds off-center composition with large negative space on the upper right, at least one third clean empty space. Exactly two persimmons and three chestnuts (count carefully), no other fruit or props."
+    }
+  ],
+  "text": {
+    "title": "PERSIMMON",
+    "title_font": "serif",
+    "title_style": "arch",
+    "title_width": 0.38,
+    "title_color": "#8B4513",
+    "poem": [
+      "Autumn fire held,",
+      "in a smooth round skin."
+    ],
+    "season_line": "LATE AUTUMN",
+    "latin": "DIOSPYROS KAKI",
+    "sub_ratio": 0.22,
+    "sub_color": "#6B4423"
+  }
+}

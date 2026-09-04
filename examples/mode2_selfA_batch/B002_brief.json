@@ -1,0 +1,86 @@
+{
+  "schema": "brief@1.1",
+  "id": "B002",
+  "source": "self",
+  "season": "初夏",
+  "style": "S3",
+  "style_reason": "batch-balanced S3 assignment",
+  "cast_size": 5,
+  "ratio": "3:4",
+  "lang": "en",
+  "hero": {
+    "name": "阳光玫瑰葡萄",
+    "en": "阳光玫瑰葡萄",
+    "count": 1,
+    "states": "whole, natural state"
+  },
+  "secondary": [
+    {
+      "name": "edible flower",
+      "en": "edible flower",
+      "count": 3,
+      "place": "左前，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第1层后退"
+    },
+    {
+      "name": "melon cube",
+      "en": "melon cube",
+      "count": 1,
+      "place": "右后，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第2层后退"
+    },
+    {
+      "name": "mint leaf",
+      "en": "mint leaf",
+      "count": 1,
+      "place": "正前，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第3层后退"
+    },
+    {
+      "name": "citrus zest",
+      "en": "citrus zest",
+      "count": 3,
+      "place": "左后，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第4层后退"
+    }
+  ],
+  "props": "a rustic wooden table with linen cloth, bountiful spread of accents all toward hero",
+  "palette": {
+    "overall": "warm ivory base, overall middle-low saturation, calm and quiet",
+    "accent": "hero natural color as vivid accent about 10-15%",
+    "bg": "#F3EDE2"
+  },
+  "views": [
+    {
+      "tag": "A",
+      "angle": "90°正俯视",
+      "compose": "居中对称",
+      "title_blank": "上方居中",
+      "sub_blank": "右下",
+      "pv_en": "straight top-down flat-lay view, centered symmetrical composition with generous margins; exactly 1 cluster of green shine muscat grapes as the hero, plump pale-green translucent spheres with gentle honey sheen, one or two leaves attached; exactly 3 small edible flowers, exactly 1 melon cube, exactly 1 mint leaf and exactly 3 scattered citrus zests placed around within 1-2 body-lengths, each clearly smaller and softer, receding in layers; on a rustic wooden table with linen cloth, bountiful spread of small accents all toward the hero; warm ivory textured paper background with one pale color-wash; soft diffused near-flat light, no hard shadow; hero cluster is the largest and most vivid element, all props smaller, dimmer and subordinate, no second focal point"
+    },
+    {
+      "tag": "B",
+      "angle": "0°平视",
+      "compose": "对角线",
+      "title_blank": "上方居中",
+      "sub_blank": "左上",
+      "pv_en": "eye-level frontal view, diagonal composition with the grape cluster set along the diagonal axis; exactly 1 cluster of green shine muscat grapes as the hero, plump translucent pale-green spheres with a subtle honey sheen and attached green leaf; exactly 3 small edible flowers, exactly 1 melon cube, exactly 1 mint leaf and exactly 3 citrus zests arranged around within 1-2 body-lengths, each clearly smaller and softer, gently fading toward the edges; on a rustic wooden table with linen cloth, bountiful small accents all oriented toward the hero; warm ivory textured paper background with one pale color-wash; soft diffused near-flat light, no hard shadow; hero cluster clearly dominates as the only focal point, all props smaller, dimmer and subordinate"
+    }
+  ],
+  "text": {
+    "title": "SHINE MUSCAT",
+    "title_font": "serif",
+    "title_style": "wave",
+    "title_width": 0.3,
+    "title_color": "",
+    "poem": [
+      "Green pearls in early summer,",
+      "honeyed light through pale skin."
+    ],
+    "season_line": "EARLY SUMMER",
+    "latin": "VITIS LABRUSCANA",
+    "sub_ratio": 0.25,
+    "sub_color": ""
+  }
+}

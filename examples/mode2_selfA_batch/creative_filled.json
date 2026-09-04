@@ -1,0 +1,28 @@
+[
+  {
+    "id": "B001",
+    "title": "BASQUE BURN",
+    "pv_en": {
+      "A": "straight top-down flat-lay view, rule-of-thirds off-center composition with generous margins; exactly 1 whole basque cheesecake as the hero, deeply caramelized burnt top with cracked rustic surface and creamy pale interior edge; exactly 1 star anise, exactly 1 silver fir sprig, exactly 3 dried orange slices, exactly 2 rosemary sprigs and exactly 2 small cranberries arranged around the hero within 1-2 body-lengths, each accent clearly smaller and softer, receding in layers toward the center; on a generous table spread with linen cloth, lush grouping of multiple small accent clusters all toward the hero; warm ivory textured paper background with one pale color-wash; soft diffused near-flat light, no hard shadow; hero is the unmistakable largest and most vivid element, all props visibly smaller and subordinate, no second focal point",
+      "B": "three-quarter high-angle view, diagonal composition with the hero placed along the diagonal axis; exactly 1 whole basque cheesecake as the hero with a deeply burnt caramelized top, cracked golden-brown surface, creamy pale center visible at the cut side; exactly 1 star anise, exactly 1 silver fir sprig, exactly 3 dried orange slices, exactly 2 rosemary sprigs and exactly 2 small cranberries placed around the cake within 1-2 body-lengths, each clearly smaller and softer, fading gently toward the edges; on a generous table spread with linen cloth, lush accent groups all oriented toward the hero; warm ivory textured paper background with one pale color-wash; soft diffused near-flat light, no hard shadow; hero is unmistakably the focal point, every prop smaller, dimmer and subordinate"
+    },
+    "poem": [
+      "Charred cream in winter dusk,",
+      "smoke and sweet on linen."
+    ],
+    "latin": "BASQUE CHEESECAKE"
+  },
+  {
+    "id": "B002",
+    "title": "SHINE MUSCAT",
+    "pv_en": {
+      "A": "straight top-down flat-lay view, centered symmetrical composition with generous margins; exactly 1 cluster of green shine muscat grapes as the hero, plump pale-green translucent spheres with gentle honey sheen, one or two leaves attached; exactly 3 small edible flowers, exactly 1 melon cube, exactly 1 mint leaf and exactly 3 scattered citrus zests placed around within 1-2 body-lengths, each clearly smaller and softer, receding in layers; on a rustic wooden table with linen cloth, bountiful spread of small accents all toward the hero; warm ivory textured paper background with one pale color-wash; soft diffused near-flat light, no hard shadow; hero cluster is the largest and most vivid element, all props smaller, dimmer and subordinate, no second focal point",
+      "B": "eye-level frontal view, diagonal composition with the grape cluster set along the diagonal axis; exactly 1 cluster of green shine muscat grapes as the hero, plump translucent pale-green spheres with a subtle honey sheen and attached green leaf; exactly 3 small edible flowers, exactly 1 melon cube, exactly 1 mint leaf and exactly 3 citrus zests arranged around within 1-2 body-lengths, each clearly smaller and softer, gently fading toward the edges; on a rustic wooden table with linen cloth, bountiful small accents all oriented toward the hero; warm ivory textured paper background with one pale color-wash; soft diffused near-flat light, no hard shadow; hero cluster clearly dominates as the only focal point, all props smaller, dimmer and subordinate"
+    },
+    "poem": [
+      "Green pearls in early summer,",
+      "honeyed light through pale skin."
+    ],
+    "latin": "VITIS LABRUSCANA"
+  }
+]

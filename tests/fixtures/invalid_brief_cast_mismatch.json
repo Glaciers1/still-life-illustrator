@@ -1,0 +1,54 @@
+{
+  "schema": "brief@1.1",
+  "id": "TEST03",
+  "source": "self",
+  "season": "仲夏",
+  "style": "S1",
+  "cast_size": 3,
+  "ratio": "3:4",
+  "lang": "en",
+  "hero": {
+    "name": "西瓜",
+    "en": "watermelon",
+    "count": 1,
+    "states": "sliced"
+  },
+  "secondary": [],
+  "props": "a wooden board",
+  "palette": {
+    "overall": "清爽",
+    "accent": "红",
+    "bg": "#F0F0F0"
+  },
+  "views": [
+    {
+      "tag": "A",
+      "angle": "俯视",
+      "compose": "居中",
+      "title_blank": "上方",
+      "sub_blank": "左下",
+      "pv_en": "test"
+    },
+    {
+      "tag": "B",
+      "angle": "平视",
+      "compose": "三分",
+      "title_blank": "上方",
+      "sub_blank": "右下",
+      "pv_en": "test"
+    }
+  ],
+  "text": {
+    "title": "WATERMELON",
+    "title_font": "serif",
+    "title_style": "normal",
+    "title_width": 0.33,
+    "poem": [
+      "a",
+      "b"
+    ],
+    "season_line": "MID SUMMER",
+    "latin": "CITRULLUS LANATUS",
+    "sub_ratio": 0.22
+  }
+}

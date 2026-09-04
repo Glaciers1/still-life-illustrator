@@ -1,0 +1,32 @@
+{
+  "common": {
+    "title": "SHINE MUSCAT",
+    "title_font": "serif",
+    "title_style": "wave",
+    "title_size_px": 120,
+    "subtitle_size_px": 20,
+    "title_width": 0.3,
+    "title_color": "",
+    "subtitle_lines": [
+      "Green pearls in early summer,",
+      "honeyed light through pale skin.",
+      "",
+      "EARLY SUMMER",
+      "VITIS LABRUSCANA"
+    ],
+    "subtitle_font": "type",
+    "sub_ratio": 0.25,
+    "sub_color": "",
+    "lang": "en"
+  },
+  "views": {
+    "A": {
+      "sub_xy": "78%,86%",
+      "title_pos": "top-center"
+    },
+    "B": {
+      "sub_xy": "24%,26%",
+      "title_pos": "top-center"
+    }
+  }
+}

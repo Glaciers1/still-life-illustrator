@@ -1,0 +1,93 @@
+{
+  "schema": "brief@1.1",
+  "id": "B001",
+  "source": "self",
+  "season": "初冬",
+  "style": "S1",
+  "style_reason": "batch-balanced S1 assignment",
+  "cast_size": 6,
+  "ratio": "3:4",
+  "lang": "en",
+  "hero": {
+    "name": "巴斯克芝士蛋糕",
+    "en": "巴斯克芝士蛋糕",
+    "count": 1,
+    "states": "whole, natural state"
+  },
+  "secondary": [
+    {
+      "name": "star anise",
+      "en": "star anise",
+      "count": 1,
+      "place": "左前，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第1层后退"
+    },
+    {
+      "name": "silver fir sprig",
+      "en": "silver fir sprig",
+      "count": 1,
+      "place": "右后，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第2层后退"
+    },
+    {
+      "name": "dried orange slice",
+      "en": "dried orange slice",
+      "count": 3,
+      "place": "正前，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第3层后退"
+    },
+    {
+      "name": "rosemary sprig",
+      "en": "rosemary sprig",
+      "count": 2,
+      "place": "左后，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第4层后退"
+    },
+    {
+      "name": "cranberry",
+      "en": "cranberry",
+      "count": 2,
+      "place": "右前，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第5层后退"
+    }
+  ],
+  "props": "a generous table spread with linen, lush arrangement of multiple accent groups toward hero",
+  "palette": {
+    "overall": "表面焦黑/深褐，内芯浅黄至金黄 family, overall middle-low saturation, warm ivory base",
+    "accent": "hero natural color as vivid accent about 10-15%",
+    "bg": "#F3EDE2"
+  },
+  "views": [
+    {
+      "tag": "A",
+      "angle": "90°正俯视",
+      "compose": "三分偏心",
+      "title_blank": "上方居中",
+      "sub_blank": "右下",
+      "pv_en": "straight top-down flat-lay view, rule-of-thirds off-center composition with generous margins; exactly 1 whole basque cheesecake as the hero, deeply caramelized burnt top with cracked rustic surface and creamy pale interior edge; exactly 1 star anise, exactly 1 silver fir sprig, exactly 3 dried orange slices, exactly 2 rosemary sprigs and exactly 2 small cranberries arranged around the hero within 1-2 body-lengths, each accent clearly smaller and softer, receding in layers toward the center; on a generous table spread with linen cloth, lush grouping of multiple small accent clusters all toward the hero; warm ivory textured paper background with one pale color-wash; soft diffused near-flat light, no hard shadow; hero is the unmistakable largest and most vivid element, all props visibly smaller and subordinate, no second focal point"
+    },
+    {
+      "tag": "B",
+      "angle": "45°三分之三高角",
+      "compose": "对角线",
+      "title_blank": "上方居中",
+      "sub_blank": "左上",
+      "pv_en": "three-quarter high-angle view, diagonal composition with the hero placed along the diagonal axis; exactly 1 whole basque cheesecake as the hero with a deeply burnt caramelized top, cracked golden-brown surface, creamy pale center visible at the cut side; exactly 1 star anise, exactly 1 silver fir sprig, exactly 3 dried orange slices, exactly 2 rosemary sprigs and exactly 2 small cranberries placed around the cake within 1-2 body-lengths, each clearly smaller and softer, fading gently toward the edges; on a generous table spread with linen cloth, lush accent groups all oriented toward the hero; warm ivory textured paper background with one pale color-wash; soft diffused near-flat light, no hard shadow; hero is unmistakably the focal point, every prop smaller, dimmer and subordinate"
+    }
+  ],
+  "text": {
+    "title": "BASQUE BURN",
+    "title_font": "hand",
+    "title_style": "italic",
+    "title_width": 0.3,
+    "title_color": "",
+    "poem": [
+      "Charred cream in winter dusk,",
+      "smoke and sweet on linen."
+    ],
+    "season_line": "EARLY WINTER",
+    "latin": "BASQUE CHEESECAKE",
+    "sub_ratio": 0.25,
+    "sub_color": ""
+  }
+}

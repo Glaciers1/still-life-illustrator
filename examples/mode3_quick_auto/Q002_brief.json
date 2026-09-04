@@ -1,0 +1,97 @@
+{
+  "schema": "brief@1.1",
+  "id": "Q002",
+  "source": "self",
+  "season": "晚秋",
+  "style": "S2",
+  "style_reason": "auto-assigned for batch balance (S2)",
+  "cast_size": 5,
+  "ratio": "3:4",
+  "lang": "en",
+  "hero": {
+    "name": "山竹",
+    "en": "Mangosteen",
+    "count": 1,
+    "states": "whole, natural state"
+  },
+  "secondary": [
+    {
+      "name": "sage leaf",
+      "en": "sage leaf",
+      "count": 1,
+      "place": "左前，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第1层后退"
+    },
+    {
+      "name": "cinnamon stick",
+      "en": "cinnamon stick",
+      "count": 2,
+      "place": "右后，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第2层后退"
+    },
+    {
+      "name": "quince slice",
+      "en": "quince slice",
+      "count": 2,
+      "place": "正前，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第3层后退"
+    },
+    {
+      "name": "chestnut",
+      "en": "chestnut",
+      "count": 3,
+      "place": "左后，放在承载面上、距主体1-2身位内、带接触影",
+      "note": "比主体更小更柔，第4层后退"
+    }
+  ],
+  "props": "a rustic wooden table with linen cloth, bountiful spread of accents all toward hero",
+  "palette": {
+    "overall": "warm ivory base, overall middle-low saturation, calm and quiet",
+    "accent": "hero natural color as vivid accent about 10-15%",
+    "bg": "#F3EDE2"
+  },
+  "views": [
+    {
+      "tag": "A",
+      "angle": "90°正俯视",
+      "compose": "三分偏心",
+      "title_blank": "上方居中",
+      "sub_blank": "右下",
+      "pv_en": "straight top-down flat-lay (90-degree) view, rule-of-thirds off-center composition, ONE single Mangosteen as the hero: natural organic form with gentle irregularity; natural size/orientation variation (parts differ 15-30%), held in/on a rustic ceramic shallow plate on linen cloth that catches the hero with believable contact point, exactly 1 small sage leaf as supporting accent, clearly smaller and softer than hero; exactly 2 small cinnamon stick as supporting accent, clearly smaller and softer than hero; exactly 2 small quince slice as supporting accent, clearly smaller and softer than hero; exactly 3 small chestnut as supporting accent, clearly smaller and softer than hero, all clustered tightly around hero within 1-2 body-lengths, soft contact shadows where parts meet, warm ivory textured paper background with one pale color-wash, soft diffused near-flat light, no hard shadow"
+    },
+    {
+      "tag": "B",
+      "angle": "45°三分之三高角",
+      "compose": "对角线",
+      "title_blank": "上方居中",
+      "sub_blank": "左上",
+      "pv_en": "three-quarter high-angle (about 45-degree) view, diagonal composition, subject along diagonal axis, ONE single Mangosteen as the hero: natural organic form with gentle irregularity; natural size/orientation variation (parts differ 15-30%), held in/on a rustic ceramic shallow plate on linen cloth that catches the hero with believable contact point, exactly 1 small sage leaf as supporting accent, clearly smaller and softer than hero; exactly 2 small cinnamon stick as supporting accent, clearly smaller and softer than hero; exactly 2 small quince slice as supporting accent, clearly smaller and softer than hero; exactly 3 small chestnut as supporting accent, clearly smaller and softer than hero, all clustered tightly around hero within 1-2 body-lengths, soft contact shadows where parts meet, warm ivory textured paper background with one pale color-wash, soft diffused near-flat light, no hard shadow"
+    }
+  ],
+  "text": {
+    "title": "MANGOSTEEN",
+    "title_font": "serif",
+    "title_style": "wave",
+    "title_width": 0.3,
+    "title_color": "",
+    "poem": [
+      "Cool air carries woodsmoke scent,",
+      "autumn's quiet time is spent."
+    ],
+    "season_line": "LATE AUTUMN",
+    "latin": "mangosteen",
+    "sub_ratio": 0.25,
+    "sub_color": ""
+  },
+  "_skeleton": {
+    "angle_en": {
+      "A": "straight top-down flat-lay (90-degree) view",
+      "B": "three-quarter high-angle (about 45-degree) view"
+    },
+    "compose_en": {
+      "A": "rule-of-thirds off-center composition, subject placed at intersection",
+      "B": "diagonal composition, subject along diagonal axis"
+    },
+    "seasonal_info": null
+  }
+}

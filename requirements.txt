@@ -1,0 +1,7 @@
+# still-life-illustrator 技能依赖
+# 安装: pip install -r requirements.txt
+
+# Pillow 12.x 已验证可用；不锁 <11 上限以兼容 Python 3.12+（Pillow 10.x 无 3.14 wheel）
+pillow>=10.0.0,<14
+
+# URL 下载使用 Python 标准库 urllib，无需 requests 等额外依赖
