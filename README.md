@@ -4,9 +4,17 @@
 
 ## 版本信息
 
-**当前版本：v1.2.0**（2026-09-04）· 许可证：MIT（见 `LICENSE`）
+**当前版本：v3.0.0**（2026-09-04）· 许可证：MIT（见 `LICENSE`）
 
 ### 变更日志
+
+#### v3.0.0（2026-09-04）
+- **新增**：external LLM 协同模式（`director_dom.py` + `director-contract.md`）、self-B 批量模式、HTML 可视化面板（`panel/`）、性能渲染档位（`performance-modes.md`）
+- **新增**：`--auto-creative --build` 一键流水线（免 LLM 填充创意字段）、`--cast-size`/`--container`/`--skip-validate` 参数
+- **新增**：`skill_doctor.py` 自诊断、`brief_history.py` 历史记录、CI 工作流、跨平台标准化（LF 换行 / shebang / `.gitattributes`）
+- **变更**：auto-creative 的 latin 行要求大写学名，无学名则跳过（不生成 latin 行）
+- **修复**：`build_from_brief.py` 中文"结构"字段泄漏进英文 `pv_en` 的问题
+- **统一**：所有脚本 `__version__` 统一为 3.0.0，全部文本文件 LF 换行
 
 #### v1.2.0（2026-09-04）
 - **新增**：MIT LICENSE 授权许可文件
