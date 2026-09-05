@@ -2,31 +2,13 @@
 
 把水果、美食、果盘、酒杯酒瓶、餐具器物、花植、电商产品等静态对象，画成带主标题、短诗与季节/学名、大留白的杂志风静物插画或海报。支持参考图风格提取、同主体多视角变体、先规划后渲染的 brief 协同模式，以及批量出图。
 
-## 版本信息
+## 版本
 
-**当前版本：v3.0.0**（2026-09-04）· 许可证：MIT（见 `LICENSE`）
+**当前版本：v3.0.1**（2026-09-05）· 许可证：MIT · 完整版（Full Edition）
 
-### 变更日志
-
-#### v3.0.0（2026-09-04）
-- **新增**：external LLM 协同模式（`director_dom.py` + `director-contract.md`）、self-B 批量模式、HTML 可视化面板（`panel/`）、性能渲染档位（`performance-modes.md`）
-- **新增**：`--auto-creative --build` 一键流水线（免 LLM 填充创意字段）、`--cast-size`/`--container`/`--skip-validate` 参数
-- **新增**：`skill_doctor.py` 自诊断、`brief_history.py` 历史记录、CI 工作流、跨平台标准化（LF 换行 / shebang / `.gitattributes`）
-- **变更**：auto-creative 的 latin 行要求大写学名，无学名则跳过（不生成 latin 行）
-- **修复**：`build_from_brief.py` 中文"结构"字段泄漏进英文 `pv_en` 的问题
-- **统一**：所有脚本 `__version__` 统一为 3.0.0，全部文本文件 LF 换行
-
-#### v1.2.0（2026-09-04）
-- **新增**：MIT LICENSE 授权许可文件
-- **优化**：`references/prompt-blocks.md` 按权重重新分配各模块词数，三风格总词数≈400（S1=394 / S2=409 / S3=398），风格段 / PALETTE 色彩 / EDGE 边缘层次尽可能丰富，兼顾约束强度与 token 效率
-- **修复**：`scripts/self_merge.py` 的 `check_pv_en` 从二元组 `(ok, message)` 改为三元组 `(ok, message, warns)`；`pv_en < 50` 从失败改为 warn 不阻断；建议范围更新为 50–100 词，中位数目标 70
-- **同步**：`scripts/validate_brief.py` 的 pv_en 建议区间同步更新为 50–100
-- **新增规则**：`SKILL.md` 新增「容器承载合理性」铁律——用户指定容器/承载面时，主体选择必须反过来适配该容器（如"放在篮子里"不选蛋糕/汤/液体）；用户未指定时按匹配表选合理承载，禁蛋糕入编篮、汤入浅盘等不合理搭配
-- **调整**：主标题字块默认占比从 0.35 调整为 0.30
-- **清理**：移除 `outputs/` 临时目录、测试缓存与过程文件
-
-#### v1.1.0（历史版本）
-- 初始公开发布：三风格（S1 水彩蜡笔 / S2 叙事编排 / S3 色粉颗粒）、brief@1.1 规划-渲染协同模式、self/external 双来源、批量出图、旬物索引 374 种、面板可视化选项、色块后处理、伪文字检测
+- 更新日志：[CHANGELOG.md](CHANGELOG.md)
+- 轻量版（Lite Edition）：[lite 分支](https://github.com/Glaciers1/still-life-illustrator/tree/lite) · [v2.1.1 Release](https://github.com/Glaciers1/still-life-illustrator/releases/tag/v2.1.1)
+- 下载：[Releases](https://github.com/Glaciers1/still-life-illustrator/releases)
 
 ---
 
