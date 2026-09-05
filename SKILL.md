@@ -113,6 +113,7 @@ metadata:
   - **external（可选扩展：仅当你想让另一个模型来发散创意、对冲自我套路时才用；离线 / 迁移到别的电脑 / 求稳求快都走 self）**：外部 LLM（如 DeepSeek）按 `references/director/director-contract.md` 只回创意 JSON；取数流程与双通道见 `references/director/director-workflow.md`（浏览器 computer_use 内调 `scripts/director_dom.py` 自动取回为主，手动把 JSON 落地为文件兜底）。
 - **固定下游（两来源共用，不维护两套渲染）**：
   1. `scripts/validate_brief.py <id>_brief.json`：硬校验门（字段/枚举/cast 自洽/双视角差异/精确数量/语言一致/技术段污染），不过不进下一步；
+- `scripts/skill_doctor.py`：技能自诊断（语法/悬空引用/双副本/prompt-blocks锚点/旬物索引/关键脚本导入/schema一致性，--strict 严格模式）
   2. `scripts/build_from_brief.py <id>_brief.json [--outdir 工作区]`：运行时从 prompt-blocks.md 锚点解析公共段（MEDIUM/PALETTE/HERO/CLUSTER/EDGE/TEXT-BLANK/NO_TEXT，单一来源，`--show-blocks` 可核对），产出 `<id>_A.txt`、`<id>_B.txt` 与 `<id>_overlay.json`（脚本默认先自动过校验门）；
   3. 接步骤 7–9：同批双稿生图 → `prep_images.py` 校正目检（数量逐项实数、档位/物理着附/主体突出）→ `overlay_text.py` 叠字 → 回读 → 交付。
 - **批量模式（一批 N 个 brief，默认 10，可选 2/5/10/15/20/30）**：逐个起草 brief 时 LLM 重复输出大量固定字段，批量模式把固定字段交给脚本、LLM 只补创意，token 消耗降到约 1/3。三条路径：

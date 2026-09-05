@@ -152,23 +152,48 @@ image_edit（有参考图）场景下，生图可能冒出伪手写文字、装�
 
 ```
 still-life-illustrator/
-├── SKILL.md                  # 技能主干：铁律、标准流水线9步、规划-渲染协同模式
+├── SKILL.md                  # 技能主干：铁律、标准流水线、规划-渲染协同模式
 ├── README.md                 # 本文件
-├── scripts/                  # 10 个 Python 工具脚本 + color_names.json
+├── CHANGELOG.md              # 版本变更日志
+├── LICENSE                   # MIT 许可证
+├── Makefile                  # make 入口（test/lint/doctor/install；Windows 等价命令见下表）
+├── requirements.txt          # 运行依赖（Pillow）
+├── requirements-dev.txt      # 开发依赖（pytest/flake8/black）
+├── .flake8                   # lint 配置（CI 同款）
+├── .gitattributes            # 行尾规范化（全库 LF）
+├── .gitignore
+├── .github/workflows/ci.yml  # GitHub Actions：skill_doctor + pytest + flake8（Python 3.10–3.12）
+├── scripts/                  # 12 个 Python 工具脚本 + color_names.json
 ├── references/
 │   ├── style-profiles.md     # 三风格完整定义（公共段笔触克制+S1/S2/S3三节）
-│   ├── layout-and-composition.md  # 通用规则与文字SSOT（像素/背景/构图/三铁律/文字系统）
+│   ├── layout-and-composition.md  # 通用规则与文字SSOT（像素/背景/构图/三铁律/文字系统/色块§8）
 │   ├── prompt-blocks.md      # 出图提示词模块库（<!--block:NAME-->锚点，脚本运行时解析）
 │   ├── subject-structure.md  # 主体结构分析方法与分主体速查、搭靠层级规则
 │   ├── seasonal_produce_index.json  # 四季应季＋全年常备题材事实库《旬物索引》374种（五区；JSON数据库，脚本优先查询）
 │   ├── seasonal-produce-index.md   # 四季应季＋全年常备题材事实库《旬物索引》374种（五区；人类可读SSOT，供编辑）
 │   ├── composition-cast.md   # 组合档位SSOT（Solo~Lush六档、多层后退、物理着附）
+│   ├── performance-modes.md  # 快速档行为定义（seedream_4.5 / 1536 / 可单稿）
 │   ├── style-extraction.md   # 参考图提取表
 │   └── director/
 │       ├── brief-schema.md   # brief@1.1 唯一规划格式
 │       ├── director-contract.md  # 外部LLM契约（自包含可粘贴）
 │       └── director-workflow.md  # 执行端唯一SOP（self六步+external双通道+批量三条路径）
-└── assets/fonts/             # 自有字体：内置 OFL 中文字体 LXGWWenKai-Regular.ttf（跨平台 CJK 兜底），可另放自有字体
+├── panel/                    # 可视化选项面板
+│   ├── panel_pro.html        # 面板 UI（7语言/四季背景/成品预览/快捷预设）
+│   ├── panel_config.json     # 16个可选项+6个快捷预设定义
+│   ├── start_panel.py        # 本地HTTP服务器+启动器（端口8765，含图片扫描API）
+│   └── _run_panel.vbs        # Windows 常驻无窗口启动器（纯 ASCII；配合计划任务 StillLifePanelServer）
+├── tests/                    # 单元测试 73 项 + brief 校验夹具
+│   ├── test_core.py          # validate_brief / self_merge / overlay_text
+│   ├── test_color_palette.py # 色卡提取/渲染/CLI
+│   └── fixtures/             # 有效/无效 brief 示例
+├── examples/                 # 三种模式输入输出示例（brief → prompt → overlay）
+│   ├── mode1_single/         # 单张 brief 流水线
+│   ├── mode2_selfA_batch/    # self-A 批量（骨架→补创意→合并）
+│   ├── mode3_external/       # external 批量（brief 数组落地）
+│   └── README.md             # 示例说明
+├── outputs/                  # 成品输出目录（*_final.png 永久保留）
+└── assets/fonts/             # 内置 OFL 中文字体 LXGWWenKai-Regular.ttf（跨平台 CJK 兜底）+ OFL-LICENSE.txt
 ```
 
 ---
