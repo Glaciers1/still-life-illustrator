@@ -49,6 +49,5 @@
     "latin": "FRAGARIA × ANANASSA",
     "sub_ratio": 0.25,
     "sub_color": "#8A7A66"
-  },
-  "color_palette": { "enabled": false }
+  }
 }
