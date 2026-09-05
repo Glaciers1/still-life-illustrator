@@ -170,12 +170,21 @@ image_edit（有参考图）场景下，生图可能冒出伪手写文字、装�
 
 ```
 still-life-illustrator/
-├── SKILL.md                  # 技能主干：铁律、标准流水线9步、规划-渲染协同模式
+├── SKILL.md                  # 技能主干：铁律、标准流水线、规划-渲染协同模式
 ├── README.md                 # 本文件
-├── scripts/                  # 12 个 Python 工具脚本 + color_names.json
+├── CHANGELOG.md              # 版本变更日志
+├── LICENSE                   # MIT 许可证
+├── Makefile                  # make 入口（test/lint/doctor/install）
+├── requirements.txt          # 运行依赖（Pillow）
+├── requirements-dev.txt      # 开发依赖（pytest/flake8/black）
+├── .flake8                   # lint 配置（CI 同款）
+├── .gitattributes            # 行尾规范化（全库 LF）
+├── .gitignore
+├── .github/workflows/ci.yml  # GitHub Actions：skill_doctor + pytest + flake8
+├── scripts/                  # 12 个 Python 工具脚本 + color_names.json（含 creative_generator.py，无 director_dom.py）
 ├── references/
 │   ├── style-profiles.md     # 三风格完整定义（公共段笔触克制+S1/S2/S3三节）
-│   ├── layout-and-composition.md  # 通用规则与文字SSOT（像素/背景/构图/三铁律/文字系统）
+│   ├── layout-and-composition.md  # 通用规则与文字SSOT（像素/背景/构图/三铁律/文字系统/色块§8）
 │   ├── prompt-blocks.md      # 出图提示词模块库（<!--block:NAME-->锚点，脚本运行时解析）
 │   ├── subject-structure.md  # 主体结构分析方法与分主体速查、搭靠层级规则
 │   ├── seasonal_produce_index.json  # 四季应季＋全年常备题材事实库《旬物索引》374种（五区；JSON数据库，脚本优先查询）
@@ -185,7 +194,9 @@ still-life-illustrator/
 │   └── director/
 │       ├── brief-schema.md   # brief@1.1 唯一规划格式
 │       └── director-workflow.md  # 执行端唯一SOP（self 六步起草 + 批量路径）
-└── assets/fonts/             # 自有字体：内置 OFL 中文字体 LXGWWenKai-Regular.ttf（跨平台 CJK 兜底），可另放自有字体
+├── tests/                    # 单元测试 73 项 + brief 校验夹具
+├── examples/                 # 示例：mode1_single / mode2_selfA_batch / mode3_quick_auto
+└── assets/fonts/             # 内置 OFL 中文字体 LXGWWenKai-Regular.ttf（跨平台 CJK 兜底）+ OFL-LICENSE.txt
 ```
 
 ---
