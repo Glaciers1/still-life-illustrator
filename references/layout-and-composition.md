@@ -193,25 +193,26 @@ python scripts/overlay_text.py outputs/cherry.png `
 
 ### 8.1 用途与触发
 
-- **用途**：从成品图提取 2–6 种主色，渲染方形/条形色带并标注颜色名，作为配色参考卡附在成品下方或独立输出。**纯 PIL 实现，颜色名来自内置 `color_names.json` 最近邻匹配，禁止模型生成颜色名**。
+- **用途**：从成品图动态提取主色（默认最多 10 种），渲染单条横向色块带，可选标注颜色名/HEX，作为配色参考卡附在成品上或独立输出。**纯 PIL 实现，颜色名来自内置 `color_names.json` 最近邻匹配，禁止模型生成颜色名**。
 - **触发**：用户说"加色卡/配色板/提取颜色/color palette"时，在叠字完成后对 final 图执行；不点名则不做。
 
 ### 8.2 命令与参数
 
 ```
-python scripts/color_palette.py <final图> --num-colors 5 --shape square --sort brightness --pos bottom --label name -o <输出>
+python scripts/color_palette.py <final图> --max-colors 10 --pos auto --label name -o <输出>
 ```
 
-- `--num-colors`：2–6（默认 5）
-- `--shape`：square 方形（宽=高，间距=自身宽×1.5）/ bar 条形（高:宽=0.618 黄金比，间距=0 拼接）
-- `--sort`：brightness 明→暗左→右 / saturation 高饱和→低饱和 / none
-- `--pos`：top 顶部 / bottom 底部 / auto 自动找低方差空白区
-- `--label`：name 颜色名 / hex / hsl / none
-- `--batch <目录>`：批量处理目录下 `*_final.png`，输出 `*_palette.png`
+- `--max-colors`：最多提取主色数量（默认 10；排除背景色并去重后取前 N）
+- `--pos`：top 顶部 / bottom 底部 / auto 自动在上下留白带中选更干净的一侧（默认）
+- `--label`：none 不标注（默认）/ name 颜色名 / hex
+- `--swatch-w` / `--swatch-h`：单色块尺寸(px)，默认 90×20
+- `--margin-px`：色带距上下边界边距(px)，默认 120
+- `--font`：标注字体，默认 type=Courier（仅 `--label` 非 none 时生效）
+- `--batch <目录>`：批量处理目录下 `*_final.png`（直接覆盖原文件）
 
 ### 8.3 规则
 
-- >3 个色块自动分两排；
-- 色块只放背景空白区，不压主体/次元素；
-- 颜色名用打印机字体（type=Courier），默认英文；
-- 色块高度占版面 6%（`--swatch-height` 可调）。
+- 色带为单条横向排列，按明→暗左→右排序（块数 = 提取主色数，上限 `--max-colors`）；
+- `--pos auto` 自动在上下留白带中选更干净的一侧，不压主体/次元素，也可强制 top/bottom；
+- 颜色名/HEX 标注用打印机字体（type=Courier），默认不标注（--label none）；
+- 色块尺寸固定像素（默认 90×20，`--swatch-w/--swatch-h` 可调），不随版面比例缩放。

@@ -158,7 +158,7 @@ metadata:
 - `scripts/inspect_image.py`：尺寸/比例/主色/边缘色分析（支持多图、--json；--summary 整批风格汇总、--prompt-inject 输出可粘贴到提示词的英文风格片段）
 - `scripts/prep_images.py`：一键 下载URL→校正到目标尺寸→输出检查摘要；--text-scan 启发式伪文字辅助检测（边缘密度/高对比度块横向排列特征，仅辅助提示）
 - `scripts/overlay_text.py`：主标题与次要文字后期合成（单张模式 + --batch 批量模式：自动读取 *_overlay.json 对 A/B 校正图批量叠字）
-- `scripts/color_palette.py`：色块后处理（可选）——从成品图提取 2–6 主色，渲染方形/条形色带并标注颜色名；单张 + --batch 批量；颜色名来自 color_names.json 最近邻匹配，纯 PIL 实现
+- `scripts/color_palette.py`：色块后处理（可选）——从成品图动态提取主色（默认最多 10 种），渲染单条横向色块带，可选标注颜色名/HEX；单张 + --batch 批量（直接覆盖原文件）；颜色名来自 color_names.json 最近邻匹配，纯 PIL 实现
 - `scripts/color_names.json`：色块颜色名字典（168 个公认英文颜色名及 RGB 值，供 color_palette.py 最近邻匹配）
 - `scripts/validate_brief.py`：brief 硬校验门（字段/枚举/cast 自洽/双视角/数量/语言/技术段污染）
 - `scripts/build_from_brief.py`：brief→A/B 提示词＋叠字参数（单份/批量双模式）——单份 `python build_from_brief.py brief.json`，批量 `python build_from_brief.py --batch <目录>` 一次校验＋拼装全部（批量并行编排，省去逐份串行等待；输出紧凑摘要表与批次均衡统计）；brief 含 ref_style 字段时自动注入到 PALETTE 段之后

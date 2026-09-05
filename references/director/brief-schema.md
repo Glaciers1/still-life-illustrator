@@ -40,14 +40,6 @@
     "latin": "准确拉丁学名（英文大写）；zh 模式留空串 \"\"；拿不准填 TBD",
     "sub_ratio": 0.25,
     "sub_color": "#hex"
-  },
-  "color_palette": {
-    "enabled": true,
-    "num_colors": 5,
-    "shape": "square",
-    "sort": "brightness",
-    "pos": "bottom",
-    "label": "name"
   }
 }
 ```
@@ -69,7 +61,7 @@
 | `views` | 恰好 2 条，tag 依次 A/B；`angle`、`compose` 两稿不得雷同（相似度高会告警）；`pv_en` 各 90–130 词，且都含 `exactly N (count carefully)` 式精确数量 |
 | `text.title` | 非空；`title_font∈{serif,sans,kai,hand}`（无 marker）；`title_style` 五选一 |
 | `text.poem` | 恰好 2 行 |
-| `color_palette` | **可选**对象，省略或 enabled=false 则不渲染色块；num_colors∈{2,3,4,5,6}；shape∈{square,bar}；sort∈{brightness,saturation,none}；pos∈{top,bottom,auto}；label∈{name,hex,hsl,none}；由 scripts/color_palette.py 在叠字后后处理，不侵入生图提示词 |
+| 色块后处理 | brief **不含**色块字段；需要在成品上加色卡时，由执行端在叠字后直接调用 `scripts/color_palette.py`（参数与规则见 layout-and-composition.md §8），不侵入生图提示词 |
 | `text` 语言一致性 | lang=en：`season_line` 全大写、`latin` 非空（TBD 仅告警放行）；lang=zh：`latin` 必须为空串、只留中文季节 |
 | 应避免项 | pv_en/任意字段应避免出现媒介笔触、flat color blocks、no outline、EDGE、PALETTE、no text 等技术段措辞（本地补；命中给 warning，不阻断） |
 

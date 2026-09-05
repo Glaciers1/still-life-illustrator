@@ -114,19 +114,20 @@ image_edit（有参考图）场景下，生图可能冒出伪手写文字、装�
 
 ### 色块后处理（可选）
 
-从成品图提取 2–6 种主色，渲染方形或条形色带并标注颜色名，作为配色参考卡。**纯 PIL 实现，颜色名来自内置 `color_names.json`（168 个公认英文颜色名）最近邻匹配，禁止模型生成颜色名。**
+从成品图动态提取主色（默认最多 10 种，`--max-colors` 可调；排除背景色并按颜色距离<30 去重），渲染单条横向色块带，可选标注颜色名或 HEX。**纯 PIL 实现，颜色名来自内置 `color_names.json`（168 个公认英文颜色名）最近邻匹配，禁止模型生成颜色名。**
 
 触发：说"加色卡/配色板/提取颜色/color palette"时，在叠字完成后对 final 图执行；不点名则不做。
 
 参数：
-- `--num-colors`：2–6（默认 5）
-- `--shape`：square 方形（宽=高，间距=自身宽×1.5）/ bar 条形（高:宽=0.618 黄金比，间距=0 拼接）
-- `--sort`：brightness 明→暗左→右 / saturation 高饱和→低饱和 / none
-- `--pos`：top 顶部 / bottom 底部 / auto 自动找低方差空白区
-- `--label`：name 颜色名 / hex / hsl / none
-- `--batch <目录>`：批量处理目录下 `*_final.png`，输出 `*_palette.png`
+- `--max-colors`：最多提取主色数量（默认 10；排除背景色并去重后取前 N）
+- `--pos`：top 顶部 / bottom 底部 / auto 自动在上下留白带中选更干净的一侧（默认）
+- `--label`：none 不标注（默认）/ name 颜色名 / hex
+- `--swatch-w` / `--swatch-h`：单色块尺寸(px)，默认 90×20
+- `--margin-px`：色带距上下边界边距(px)，默认 120
+- `--font`：标注字体，默认 type=Courier（仅 `--label` 非 none 时生效）
+- `--batch <目录>`：批量处理目录下 `*_final.png`（直接覆盖原文件）
 
-规则：>3 个色块自动分两排；色块只放背景空白区，不压主体/次元素；颜色名用打印机字体（type=Courier），默认英文；色块高度占版面 6%（可调）。
+规则：色带为单条横向排列，按明→暗左→右排序；`--pos auto` 自动避开主体选上下留白带中更干净的一侧，不压主体/次元素；颜色名/HEX 标注用打印机字体（type=Courier），默认不标注（--label none）。
 
 ---
 
@@ -142,7 +143,7 @@ image_edit（有参考图）场景下，生图可能冒出伪手写文字、装�
 | `prep_images.py` | 一键下载URL→校正到目标尺寸→取色（支持 --text-scan 伪文字检测） |
 | `inspect_image.py` | 图片分析（尺寸/比例/主色/边缘色，支持 --summary 整批统一比例/主色板，--prompt-inject 可粘贴风格片段） |
 | `overlay_text.py` | 主标题与次要文字后期合成（支持 --batch 批量叠字模式） |
-| `color_palette.py` | 色块后处理（可选）：从成品图提取 2–6 主色，渲染方形/条形色带并标注颜色名；单张 + --batch 批量；颜色名来自 color_names.json 最近邻匹配，纯 PIL 实现 |
+| `color_palette.py` | 色块后处理（可选）：从成品图动态提取主色（默认最多 10 种），渲染单条横向色块带并可选标注颜色名/HEX；单张 + --batch 批量（直接覆盖原文件）；颜色名来自 color_names.json 最近邻匹配，纯 PIL 实现 |
 | `brief_history.py` | 历史去重（recent 8 / add，JSONL 默认落项目工作区） |
 
 ---
