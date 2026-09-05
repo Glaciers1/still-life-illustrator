@@ -2,52 +2,13 @@
 
 把水果、美食、果盘、酒杯酒瓶、餐具器物、花植、电商产品等静态对象，画成带主标题、短诗与季节/学名、大留白的杂志风静物插画或海报。支持参考图风格提取、同主体多视角变体、先规划后渲染的 brief 协同模式，以及批量出图。
 
-## 版本信息
+## 版本
 
-**当前版本：v2.1.0**（2026-09-04）· 许可证：MIT（见 `LICENSE`）
+**当前版本：v2.1.1**（2026-09-05）· 许可证：MIT · 轻量版（Lite Edition）
 
-### 变更日志
-
-#### v1.2.0（2026-09-04）
-- **新增**：MIT LICENSE 授权许可文件
-- **优化**：`references/prompt-blocks.md` 按权重重新分配各模块词数，三风格总词数≈400（S1=394 / S2=409 / S3=398），风格段 / PALETTE 色彩 / EDGE 边缘层次尽可能丰富，兼顾约束强度与 token 效率
-- **修复**：`scripts/self_merge.py` 的 `check_pv_en` 从二元组 `(ok, message)` 改为三元组 `(ok, message, warns)`；`pv_en < 50` 从失败改为 warn 不阻断；建议范围更新为 50–100 词，中位数目标 70
-- **同步**：`scripts/validate_brief.py` 的 pv_en 建议区间同步更新为 50–100
-- **新增规则**：`SKILL.md` 新增「容器承载合理性」铁律——用户指定容器/承载面时，主体选择必须反过来适配该容器（如"放在篮子里"不选蛋糕/汤/液体）；用户未指定时按匹配表选合理承载，禁蛋糕入编篮、汤入浅盘等不合理搭配
-- **调整**：主标题字块默认占比从 0.35 调整为 0.30
-- **清理**：移除 `outputs/` 临时目录、测试缓存与过程文件
-
-#### v1.1.0（历史版本）
-- 初始公开发布：三风格（S1 水彩蜡笔 / S2 叙事编排 / S3 色粉颗粒）、brief@1.1 规划-渲染协同模式、self/external 双来源、批量出图、旬物索引 374 种、面板可视化选项、色块后处理、伪文字检测
-
----
-
-## 变更日志
-
-### v2.1.0（2026-09-04）—— 精简版
-1. **移除 external 扩展模式**：删除 `director-contract.md`（外部 LLM 契约）与 `scripts/director_dom.py`，brief 来源统一为 self（`validate_brief.py` 的 source 校验收紧为 `self`）。
-2. **移除 self-B 批量路径**：批量生成收敛为 self-A（骨架+LLM 补创意）与 v2.0 快速（`--auto-creative --build`）两条。
-3. **移除 HTML 可视化面板**：删除 `panel/` 目录（panel_pro.html / start_panel.py / _run_panel.vbs / panel_config.json），不再需要面板服务器与计划任务常驻。
-4. **合并 quick_batch.py 到 self_skeleton.py**：`--build`（一步拼装）、`--cast-size`（auto/large/1-6）、`--container`（8 种容器）、`--skip-validate` 并入 `self_skeleton.py`，删除 `quick_batch.py`。
-5. **渲染档位仅保留正式档**：移除快速档（seedream_4.5 / 1536 / 单稿），统一默认 `seedream_5.0_pro` / 长边 2048 / 双稿。
-6. **保留**：self 单张（顺滑/最控）、self-A 批量、v2.0 快速路径、全部输入方式（文本/参考图单张/参考图批量）、全部后处理（叠字/校正/色块/历史去重）、正式渲染档位。
-
-### v2.0.0（2026-09-04）—— 前置流程优化版
-1. **新增 `scripts/creative_generator.py`**：预制创意库 + 模板自动生成器。预制库优先查询，查询不到时用结构化模板自动生成 pv_en/poem/latin/title，完全跳过 LLM 补创意环节。
-2. **修改 `scripts/self_skeleton.py`**：新增 `--auto-creative` 参数，生成骨架时自动调用 CreativeGenerator 填充创意字段（pv_en/poem/latin/title），不再留 TBD。版本号升级到 v2.0.0。
-3. **新增 `scripts/quick_batch.py`**：快速批量出图前置脚本，整合 `self_skeleton` + `creative_generator` + `build_from_brief` 为一步，直接生成 `*_A.txt` / `*_B.txt` / `*_overlay.json`，可直接用于 image_gen。
-4. **面板默认值确认**：风格（auto 批次均衡）、组合档位（auto 按概率抽样）、容器承载（auto 随机选择）均保持默认 auto。
-5. **中文主体名自动检测**：creative_generator.py 自动检测中文主体名，根据旬物索引质感关键词映射为英文替代（如 creamy dessert / crispy pastry / juicy fruit），避免提示词出现中文。
-6. **前置流程对比**：
-   - 旧流程：self_skeleton → LLM补创意(多轮对话) → self_merge → build_from_brief → 生图（5步，约需多轮对话）
-   - 新流程：quick_batch（或 self_skeleton --auto-creative + build_from_brief）→ 生图（2-3步，无需LLM补创意）
-
-### v1.2.0（2026-09-04）—— 封装版
-1. 新增 MIT LICENSE 授权许可文件
-2. 更新 README.md 和 SKILL.md 版本信息与变更日志
-3. 清理临时文件（outputs/、测试缓存、临时脚本）
-4. 验证技能完整性（37个关键文件全部存在，7个核心脚本 --help 可运行）
-5. 打包为 zip（still-life-illustrator-v1.2.0.zip，44文件，12.05 MB）
+- 更新日志：[CHANGELOG.md](CHANGELOG.md)
+- 完整版（Full Edition）：[main 分支](https://github.com/Glaciers1/still-life-illustrator/tree/main) · [v3.0.1 Release](https://github.com/Glaciers1/still-life-illustrator/releases/tag/v3.0.1)
+- 下载：[Releases](https://github.com/Glaciers1/still-life-illustrator/releases)
 
 ---
 
